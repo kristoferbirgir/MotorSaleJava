@@ -13,7 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import `is`.hbv601g.motorsale.databinding.ActivityMainBinding;
+import is.hbv601g.motorsale.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
