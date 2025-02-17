@@ -14,11 +14,23 @@ import androidx.fragment.app.Fragment;
 
 import is.hbv601g.motorsale.services.UserService;
 
+/**
+ * LoginFragment handles the user login UI and authentication logic.
+ * It interacts with UserService to authenticate users.
+ */
 public class LoginFragment extends Fragment {
     private EditText emailEditText, passwordEditText;
     private Button loginButton;
     private UserService userService;
 
+    /**
+     * Inflates the fragment layout and initializes UI elements.
+     *
+     * @param inflater LayoutInflater used to inflate the view.
+     * @param container The parent container of the fragment.
+     * @param savedInstanceState The saved instance state.
+     * @return The root view of the fragment.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,6 +45,10 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Attempts to log in by validating input fields and calling UserService.
+     * If fields are empty, it shows a toast message.
+     */
     private void attemptLogin() {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
