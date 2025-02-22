@@ -7,12 +7,11 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="is.hbv601g.motorsale.FirstFragment"
+        android:name="is.hbv601g.motorsale.ListingsFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
-
+        tools:layout="@layout/fragment_listings">
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            android:id="@+id/action_FirstFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
     </fragment>
     <fragment

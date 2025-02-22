@@ -4,15 +4,21 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * NetworkingService is responsible for handling network requests using Volley.
@@ -52,6 +58,33 @@ public class NetworkingService {
                 });
 
         requestQueue.add(jsonObjectRequest);
+    }
+
+
+    public void getRequest(String reqURL, final VolleyRawCallback callback) {
+        JsonRequest request = new JsonRequest(Request.Method.GET, BASE_URL + reqURL, null,
+                response -> callback.onSuccess(response.toString()),  // Pass raw JSON response
+                error -> callback.onError(error.toString())) {
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                try {
+                    String jsonString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                    return Response.success(jsonString, HttpHeaderParser.parseCacheHeaders(response));
+                } catch (UnsupportedEncodingException e) {
+                    return Response.error(new ParseError(e));
+                }
+            }
+        };
+
+        requestQueue.add(request);
+    }
+
+    /**
+     * Callback interface for handling raw JSON responses.
+     */
+    public interface VolleyRawCallback {
+        void onSuccess(String jsonResponse);
+        void onError(String error);
     }
 
 
