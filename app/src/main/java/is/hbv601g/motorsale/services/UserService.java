@@ -1,6 +1,7 @@
 package is.hbv601g.motorsale.services;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,5 +62,46 @@ public class UserService {
          * @param success True if login was successful, false otherwise.
          */
         void onLoginResult(boolean success);
+    }
+
+    public void register(String username,
+                         String firstName,
+                         String lastName,
+                         String email,
+                         String password,
+                         int phoneNumber,
+                         RegisterCallback callback) {
+        JSONObject jsonBody = new JSONObject();
+        try {
+            jsonBody.put("username", username);
+            jsonBody.put("firstName", firstName);
+            jsonBody.put("lastName", lastName);
+            jsonBody.put("email", email);
+            jsonBody.put("password", password);
+            jsonBody.put("phoneNumber", phoneNumber);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            callback.onRegisterResult(false);
+            return;
+        }
+
+        // 'User/signup' hits POST /api/User/signup
+        networkingService.postRequest("User/signup", jsonBody, new NetworkingService.VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject result) {
+                // Registration succeeded (HTTP 200)
+                callback.onRegisterResult(true);
+            }
+
+            @Override
+            public void onError(String error) {
+                // Registration failed (HTTP 400 or something else)
+                callback.onRegisterResult(false);
+            }
+        });
+    }
+
+    public interface RegisterCallback {
+        void onRegisterResult(boolean success);
     }
 }

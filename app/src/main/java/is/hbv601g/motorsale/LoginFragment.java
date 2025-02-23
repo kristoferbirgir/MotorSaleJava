@@ -6,11 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import is.hbv601g.motorsale.services.UserService;
 
@@ -22,6 +25,7 @@ public class LoginFragment extends Fragment {
     private EditText emailEditText, passwordEditText;
     private Button loginButton;
     private UserService userService;
+    private TextView createAccountTextView;
 
     /**
      * Inflates the fragment layout and initializes UI elements.
@@ -42,6 +46,13 @@ public class LoginFragment extends Fragment {
         userService = new UserService(requireContext());
         loginButton.setOnClickListener(v -> attemptLogin());
 
+        createAccountTextView = view.findViewById(R.id.createAccountTextView);
+
+        createAccountTextView.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(v);
+            navController.navigate(R.id.action_loginFragment_to_registerFragment);
+        });
+
         return view;
     }
 
@@ -61,6 +72,9 @@ public class LoginFragment extends Fragment {
         userService.login(email, password, success -> {
             if (success) {
                 Toast.makeText(getActivity(), "Login Successful!", Toast.LENGTH_SHORT).show();
+                NavController navController = Navigation.findNavController(requireView());
+                navController.navigate(R.id.action_loginFragment_to_listingsFragment);
+
             } else {
                 Toast.makeText(getActivity(), "Login Failed!", Toast.LENGTH_SHORT).show();
             }
