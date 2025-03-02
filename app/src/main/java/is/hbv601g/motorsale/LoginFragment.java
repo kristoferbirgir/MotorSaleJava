@@ -17,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import is.hbv601g.motorsale.DTOs.UserDTO;
 import is.hbv601g.motorsale.entities.User;
 import is.hbv601g.motorsale.services.UserService;
@@ -92,6 +94,10 @@ public class LoginFragment extends Fragment {
                     if (user != null) {
                         userViewModel.setUser(user);
                         Log.d("Login Success", "User found: " + user.getEmail());
+                        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+                        if (bottomNavigationView != null) {
+                            bottomNavigationView.setSelectedItemId(R.id.home);
+                        }
 
 
                     } else {
