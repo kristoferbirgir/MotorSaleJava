@@ -6,7 +6,8 @@
     <string name="login_fragment_label">Login</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-    <string name="login">Login</string>
+    <string name="Login">Login</string>
+    <string name="Home">Home</string>
 
 
     <string name="login_instruction">

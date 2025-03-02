@@ -13,7 +13,12 @@
         <action
             android:id="@+id/action_listingsFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_listingsFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+
     </fragment>
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="is.hbv601g.motorsale.LoginFragment"
@@ -35,6 +40,15 @@
         android:name="is.hbv601g.motorsale.RegisterFragment"
         android:label="RegisterFragment"
         tools:layout="@layout/fragment_register" />
+
+
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="is.hbv601g.motorsale.UserFragment"
+        android:label="@string/listings_fragment_label"
+        tools:layout="@layout/fragment_user">
+
+    </fragment>
         <!--<action
         android:id="@+id/action_registerFragment_to_loginFragment"
         app:destination="@id/loginFragment" />-->
