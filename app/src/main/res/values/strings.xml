@@ -4,6 +4,8 @@
     <!-- Strings used for fragments for navigation -->
     <string name="listings_fragment_label">Main page</string>
     <string name="login_fragment_label">Login</string>
+    <string name="create_listing_fragment_label">Create listing</string>
+    <string name="user_fragment_label">User</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="Login">Login</string>

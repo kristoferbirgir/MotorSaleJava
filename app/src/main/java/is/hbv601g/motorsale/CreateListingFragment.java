@@ -161,12 +161,10 @@ public class CreateListingFragment extends Fragment {
 
         MotorVehicle motorVehicle = new MotorVehicle(motorVehicleType, brand, model, modelYear, fuelType, null, engineSize, horsePower, mileage, 0, fuelConsumption, transmissionType);
 
-        // Create Listing DTO with MotorVehicle
         Listing newListing = new Listing(motorVehicle, price, address, postalCode, city, description, userId, null);
 
-        // Upload the image first, then create the listing
-        listingService.createListing(newListing, success -> {
-            if (success) {
+        listingService.createListing(newListing, createdListing -> {
+            if (createdListing != null) {
                 Toast.makeText(getActivity(), "Listing Created!", Toast.LENGTH_SHORT).show();
                 NavController navController = Navigation.findNavController(requireView());
                 navController.navigate(R.id.listingsFragment);

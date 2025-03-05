@@ -7,12 +7,14 @@ import com.google.gson.Gson;
 
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
 import is.hbv601g.motorsale.DTOs.ListingDTO;
+import is.hbv601g.motorsale.entities.Listing;
 import is.hbv601g.motorsale.services.NetworkingService;
 
 /**
@@ -63,6 +65,29 @@ public class ListingService {
                 callback.onFindAllResult(null);
             }
         });
+    }
+
+    public void createListing(Listing listing, FindByIdCallback callback) {
+        String listingJson = gson.toJson(listing);
+        try {
+            JSONObject jsonBody = new JSONObject(listingJson);
+            networkingService.postRequest("listings/createListing", jsonBody, new NetworkingService.VolleyCallback() {
+                @Override
+                public void onSuccess(JSONObject result) {
+                    ListingDTO createdListing = gson.fromJson(result.toString(), ListingDTO.class);
+                    callback.onFindByIdResult(createdListing);
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.e("ListingService", "Error creating listing: " + error);
+                    callback.onFindByIdResult(null);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+            callback.onFindByIdResult(null);
+        }
     }
 
 

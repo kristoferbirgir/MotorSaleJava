@@ -45,8 +45,19 @@
     <fragment
         android:id="@+id/userFragment"
         android:name="is.hbv601g.motorsale.UserFragment"
-        android:label="@string/listings_fragment_label"
+        android:label="@string/user_fragment_label"
         tools:layout="@layout/fragment_user">
+        <action
+            android:id="@+id/action_userFragment_to_createListingFragment"
+            app:destination="@id/createListingFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/createListingFragment"
+        android:name="is.hbv601g.motorsale.CreateListingFragment"
+        android:label="@string/create_listing_fragment_label"
+        tools:layout="@layout/fragment_create_listing">
 
     </fragment>
         <!--<action

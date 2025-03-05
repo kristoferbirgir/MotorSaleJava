@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:fillViewport="true"
+    android:paddingBottom="500dp"
+    android:clipToPadding="false"
+    android:descendantFocusability="blocksDescendants">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -143,5 +148,7 @@
             android:layout_height="wrap_content"
             android:text="Create Listing" />
 
+
     </LinearLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>
+
