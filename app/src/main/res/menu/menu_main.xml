@@ -3,10 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="is.hbv601g.motorsale.MainActivity">
     <item
-        android:id="@+id/action_login"
+        android:id="@+id/login"
         android:orderInCategory="100"
-        android:title="@string/login"
-        android:icon="@drawable/ic_login"
+        android:title="@string/Login"
+        android:icon="@drawable/icon_user"
         app:showAsAction="ifRoom|withText" />
+    <item
+        android:id="@+id/home"
+        android:title="@string/Home"
+        android:icon="@drawable/icon_home"/>
 
 </menu>

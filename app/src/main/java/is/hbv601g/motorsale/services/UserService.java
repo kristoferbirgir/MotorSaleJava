@@ -3,8 +3,17 @@ package is.hbv601g.motorsale.services;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.List;
+
+import is.hbv601g.motorsale.DTOs.ListingDTO;
+import is.hbv601g.motorsale.DTOs.UserDTO;
 
 /**
  * UserService handles user-related operations such as login.
@@ -12,6 +21,7 @@ import org.json.JSONObject;
  */
 public class UserService {
     private final NetworkingService networkingService;
+    private final Gson gson;
 
     /**
      * Constructor that initializes the UserService with a NetworkingService instance.
@@ -20,6 +30,7 @@ public class UserService {
      */
     public UserService(Context context) {
         this.networkingService = new NetworkingService(context);
+        this.gson = new Gson();
     }
 
     /**
@@ -51,6 +62,8 @@ public class UserService {
             }
         });
     }
+
+
 
     /**
      * Interface for handling login results.
@@ -101,7 +114,34 @@ public class UserService {
         });
     }
 
+    // Fetch user details by email
+    public void fetchUserByEmail(String email, findByUsernameCallback callback) {
+        String url = "User/?username=" + email; // Construct query URL
+
+        networkingService.getRequest(url, new NetworkingService.VolleyRawCallback() {
+            @Override
+            public void onSuccess(String jsonResponse) {
+                Log.d("UserService", "API Response: " + jsonResponse);
+                UserDTO user = gson.fromJson(jsonResponse, UserDTO.class);
+                callback.onFound(user); // ✅ Use callback to return user
+            }
+            @Override
+            public void onError(String error) {
+                Log.e("UserService", "API Error: " + error);
+                callback.onFound(null); // ✅ Return `null` to indicate failure
+            }
+        });
+    }
+
+
+
+
     public interface RegisterCallback {
         void onRegisterResult(boolean success);
+    }
+
+
+    public interface findByUsernameCallback {
+        void onFound(UserDTO userDTO);
     }
 }
