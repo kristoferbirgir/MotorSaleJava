@@ -1,5 +1,6 @@
 package is.hbv601g.motorsale;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -54,6 +55,8 @@ public class CreateListingFragment extends Fragment {
     private Uri photoUri;
     private File photoFile;
     private static final int PICK_IMAGE_REQUEST = 1;
+    private static final int CAMERA_PIC_REQUEST = 1337;
+
 
     @Nullable
     @Override
@@ -84,7 +87,7 @@ public class CreateListingFragment extends Fragment {
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
         // Open gallery to select image
-        buttonAddImage.setOnClickListener(v -> openImagePicker());
+        buttonAddImage.setOnClickListener(v -> showImageSourceDialog());
 
         // Submit listing
         buttonSubmitListing.setOnClickListener(v -> submitListing());
@@ -92,25 +95,61 @@ public class CreateListingFragment extends Fragment {
         return view;
     }
 
-    // Open gallery to pick an image
-    private void openImagePicker() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+    private void showImageSourceDialog() {
+        String[] options = {"Take Photo", "Select Photo"};
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Upload Image")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        openCamera();
+                    } else {
+                        openGallery();
+                    }
+                })
+                .show();
+    }
+
+    private void openCamera() {
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
+
 
     // Handle the selected image
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && data != null) {
-            Uri imageUri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), imageUri);
-                imagePreview.setImageBitmap(bitmap);
-                imagePreview.setVisibility(View.VISIBLE);
-                encodedImage = encodeImage(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
+
+        if (resultCode == getActivity().RESULT_OK && data != null) {
+            if (requestCode == PICK_IMAGE_REQUEST) {
+                Uri imageUri = data.getData();
+                if (imageUri != null) {
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(
+                                requireActivity().getContentResolver(), imageUri);
+                        imagePreview.setImageBitmap(bitmap);
+                        imagePreview.setVisibility(View.VISIBLE);
+                        encodedImage = encodeImage(bitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (requestCode == CAMERA_PIC_REQUEST) {
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    Bitmap bitmap = (Bitmap) extras.get("data");
+                    if (bitmap != null) {
+                        imagePreview.setImageBitmap(bitmap);
+                        imagePreview.setVisibility(View.VISIBLE);
+                        encodedImage = encodeImage(bitmap);
+                    }
+                }
             }
         }
     }

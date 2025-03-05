@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <!-- Main content -->
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_main"/>
 
 
     <!-- Bottom Toolbar -->
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/unarnian_blue"
-        android:layout_gravity="bottom" />
+        android:layout_gravity="top" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

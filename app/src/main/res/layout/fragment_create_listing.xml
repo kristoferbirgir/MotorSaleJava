@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     android:fillViewport="true"
-    android:paddingBottom="500dp"
+    android:paddingBottom="50dp"
     android:clipToPadding="false"
     android:descendantFocusability="blocksDescendants">
 
@@ -18,18 +18,22 @@
             android:id="@+id/editText_brand"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="30dp"
             android:hint="Brand" />
 
         <EditText
             android:id="@+id/editText_model"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:hint="Model" />
 
         <EditText
             android:id="@+id/editText_modelYear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:hint="Model Year"
             android:inputType="number" />
 
@@ -37,12 +41,14 @@
             android:id="@+id/editText_engineSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:hint="Engine Size" />
 
         <EditText
             android:id="@+id/editText_horsePower"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:hint="Horsepower"
             android:inputType="number" />
 
@@ -50,6 +56,7 @@
             android:id="@+id/editText_mileage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:hint="Mileage"
             android:inputType="number" />
 
@@ -57,6 +64,7 @@
             android:id="@+id/editText_fuelConsumption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:hint="Fuel Consumption"
             android:inputType="numberDecimal" />
 
@@ -64,6 +72,7 @@
             android:id="@+id/editText_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:hint="Price"
             android:inputType="numberDecimal" />
 
@@ -71,6 +80,7 @@
             android:id="@+id/editText_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:hint="Address"
             android:inputType="text" />
 
@@ -78,6 +88,7 @@
             android:id="@+id/editText_postalCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:hint="Postal Code"
             android:inputType="text" />
 
@@ -85,6 +96,7 @@
             android:id="@+id/editText_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:hint="City"
             android:inputType="text" />
 
@@ -92,6 +104,7 @@
             android:id="@+id/editText_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:hint="Description"
             android:inputType="textMultiLine"
             android:lines="3" />
@@ -100,11 +113,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:text="Fuel Type" />
         <Spinner
             android:id="@+id/spinner_fuel_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:entries="@array/fuel_type_values" />
 
         <!-- Motor Vehicle Type Spinner -->
@@ -116,6 +131,7 @@
             android:id="@+id/spinner_motor_vehicle_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:entries="@array/motor_vehicle_type_values" />
 
         <!-- Transmission Type Spinner -->
@@ -127,6 +143,7 @@
             android:id="@+id/spinner_transmission_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:entries="@array/transmission_type_values" />
 
         <Button
@@ -140,13 +157,17 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
+            android:layout_marginBottom="10dp"
             android:visibility="gone" />
 
         <Button
             android:id="@+id/button_submit_listing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="100dp"
             android:text="Create Listing" />
+
+
 
 
     </LinearLayout>
