@@ -30,6 +30,13 @@
             android:hint="Model" />
 
         <EditText
+            android:id="@+id/editText_color"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="30dp"
+            android:hint="Color" />
+
+        <EditText
             android:id="@+id/editText_modelYear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -55,20 +55,29 @@ public class ListingsFragment extends Fragment {
 
     private void fetchListings() {
         listingsService.findAll(listings -> {
+            // If the fragment's view is destroyed, don't attempt to update the UI.
+            if (binding == null) return;
+
+            // Stop the refreshing animation if active.
             if (swipeRefreshLayout.isRefreshing()) {
-                adapter.updateListings(listings);
                 swipeRefreshLayout.setRefreshing(false);
             }
 
-            if (listings.isEmpty()) {
+            if (listings == null || listings.isEmpty()) {
                 Toast.makeText(getContext(), "No listings found", Toast.LENGTH_SHORT).show();
             } else {
-                Log.e("ListingsFragment", "Listings: " + listings);
-                adapter = new VehicleAdapter(getContext(), listings);
-                binding.recyclerView.setAdapter(adapter);
+                // If adapter is already initialized, update its listings.
+                if (adapter != null) {
+                    adapter.updateListings(listings);
+                } else {
+                    // Otherwise, create a new adapter and set it to the RecyclerView.
+                    adapter = new VehicleAdapter(getContext(), listings);
+                    binding.recyclerView.setAdapter(adapter);
+                }
             }
         });
     }
+
 
     @Override
     public void onDestroyView() {

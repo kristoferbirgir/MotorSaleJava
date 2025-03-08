@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.test.espresso.core.internal.deps.guava.base.Strings;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -44,7 +45,7 @@ import is.hbv601g.motorsale.viewModels.UserViewModel;
 public class CreateListingFragment extends Fragment {
 
     private static final int CAMERA_REQUEST_CODE = 100;
-    private EditText editTextBrand, editTextModel, editTextModelYear, editTextEngineSize, editTextHorsePower, editTextMileage, editTextFuelConsumption;
+    private EditText editTextBrand, editTextModel, editTextColor, editTextModelYear, editTextEngineSize, editTextHorsePower, editTextMileage, editTextFuelConsumption;
     private EditText editTextPrice, editTextAddress, editTextPostalCode, editTextCity, editTextDescription;
     private Button buttonAddImage, buttonSubmitListing;
     private ImageView imagePreview;
@@ -66,6 +67,7 @@ public class CreateListingFragment extends Fragment {
         // Initialize UI elements
         editTextBrand = view.findViewById(R.id.editText_brand);
         editTextModel = view.findViewById(R.id.editText_model);
+        editTextColor = view.findViewById(R.id.editText_color);
         editTextModelYear = view.findViewById(R.id.editText_modelYear);
         editTextEngineSize = view.findViewById(R.id.editText_engineSize);
         editTextHorsePower = view.findViewById(R.id.editText_horsePower);
@@ -162,10 +164,16 @@ public class CreateListingFragment extends Fragment {
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
+    private byte[] StringToByteArray(String encodedString) {
+        byte[] bytes = Base64.decode(encodedString, Base64.DEFAULT);
+        return bytes;
+    }
+
     // Submit listing
     private void submitListing() {
         String brand = editTextBrand.getText().toString().trim();
         String model = editTextModel.getText().toString().trim();
+        String color = editTextColor.getText().toString().trim();
         String modelYearStr = editTextModelYear.getText().toString().trim();
         String engineSize = editTextEngineSize.getText().toString().trim();
         String horsePowerStr = editTextHorsePower.getText().toString().trim();
@@ -198,9 +206,9 @@ public class CreateListingFragment extends Fragment {
             return;
         }
 
-        MotorVehicle motorVehicle = new MotorVehicle(motorVehicleType, brand, model, modelYear, fuelType, null, engineSize, horsePower, mileage, 0, fuelConsumption, transmissionType);
+        MotorVehicle motorVehicle = new MotorVehicle(motorVehicleType, brand, model, modelYear, fuelType, color, engineSize, horsePower, mileage, 0, fuelConsumption, transmissionType);
 
-        Listing newListing = new Listing(motorVehicle, price, address, postalCode, city, description, userId, null);
+        Listing newListing = new Listing(motorVehicle, price, address, postalCode, city, description, userId, StringToByteArray(encodedImage));
 
         listingService.createListing(newListing, createdListing -> {
             if (createdListing != null) {

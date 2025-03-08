@@ -43,6 +43,8 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.volley)
     implementation(libs.gson)
+    implementation(libs.swiperefreshlayout)
+    implementation(libs.espresso.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
