@@ -133,6 +133,34 @@ public class UserService {
         });
     }
 
+    public void fetchUserListings(Long userId, FindUserListingsCallback callback) {
+        String url = "listings/listingsByUserId?userId=" + userId;
+        networkingService.getRequest(url, new NetworkingService.VolleyRawCallback() {
+            @Override
+            public void onSuccess(String jsonResponse) {
+                try {
+                    Log.d("ListingsService", "API Response: " + jsonResponse);
+                    Type listType = new TypeToken<List<ListingDTO>>() {}.getType();
+                    List<ListingDTO> listings = gson.fromJson(jsonResponse, listType);
+
+                    Log.d("ListingsService", "Parsed Listings Count: " + listings.size());
+
+                    callback.onFindAllResult(listings);
+
+                } catch (Exception e) {
+                    Log.e("ListingsService", "JSON parsing error", e);
+                    callback.onFindAllResult(null);
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e("ListingsService", "API Error: " + error);
+                callback.onFindAllResult(null);
+            }
+        });
+    }
+
 
 
 
@@ -144,4 +172,12 @@ public class UserService {
     public interface findByUsernameCallback {
         void onFound(UserDTO userDTO);
     }
+    /**
+     * Interface for handling multiple listings results.
+     */
+    public interface FindUserListingsCallback {
+        void onFindAllResult(List<ListingDTO> listings);
+    }
 }
+
+

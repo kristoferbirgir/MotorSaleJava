@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
+    android:paddingBottom="5dp"
     android:fillViewport="true">
 
     <LinearLayout
@@ -16,40 +18,75 @@
             android:layout_height="200dp"
             android:scaleType="centerCrop" />
 
-        <TextView
-            android:id="@+id/tvVehicleName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Brand Model"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:paddingTop="8dp" />
+        <!-- Horizontal Layout to split into two parts -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tvVehicleYear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Year"
-            android:textSize="18sp" />
+            <!-- Left side with vehicle info, takes most space -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvVehiclePrice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$20,000"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/holo_green_dark"
-            android:paddingTop="8dp" />
+                <TextView
+                    android:id="@+id/tvVehicleName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:text="Brand Model"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tvVehicleLocation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="City, Postal Code"
-            android:textSize="16sp"
-            android:paddingTop="4dp" />
+                <TextView
+                    android:id="@+id/tvVehicleYear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Year"
+                    android:textSize="18sp" />
 
+                <TextView
+                    android:id="@+id/tvVehiclePrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="8dp"
+                    android:text="$20,000"
+                    android:textColor="@android:color/holo_green_dark"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvVehicleLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="4dp"
+                    android:text="City, Postal Code"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="bottom">
+                <Button
+                    android:id="@+id/editListingButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Edit"
+                    android:visibility="gone"/>
+
+                <Button
+                    android:id="@+id/viewListingButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="View Listing" />
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 

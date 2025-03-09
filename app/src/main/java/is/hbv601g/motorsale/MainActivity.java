@@ -22,6 +22,8 @@ import is.hbv601g.motorsale.viewModels.UserViewModel;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
