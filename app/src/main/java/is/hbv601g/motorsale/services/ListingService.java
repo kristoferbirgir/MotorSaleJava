@@ -36,6 +36,11 @@ public class ListingService {
         this.gson = new Gson();
     }
 
+    /**
+     * Finds all listings in the database.
+     *
+     * @param callback
+     */
     public void findAll(FindAllCallback callback) {
         networkingService.getRequest("listings", new NetworkingService.VolleyRawCallback() {
             @Override
@@ -60,6 +65,12 @@ public class ListingService {
         });
     }
 
+    /**
+     * Finds a listing by its ID.
+     *
+     * @param listingId
+     * @param callback
+     */
     public void findById(String listingId, FindByIdCallback callback) {
         String url = "listings/getListing?listingId=" + listingId;
         networkingService.getRequest(url, new NetworkingService.VolleyRawCallback() {
@@ -82,7 +93,12 @@ public class ListingService {
         });
     }
 
-
+    /**
+     * Creates a new listing in the database.
+     *
+     * @param listing
+     * @param callback
+     */
     public void createListing(Listing listing, FindByIdCallback callback) {
         String listingJson = gson.toJson(listing);
         try {

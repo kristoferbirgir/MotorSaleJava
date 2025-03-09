@@ -44,7 +44,6 @@ import is.hbv601g.motorsale.viewModels.UserViewModel;
 
 public class CreateListingFragment extends Fragment {
 
-    private static final int CAMERA_REQUEST_CODE = 100;
     private EditText editTextBrand, editTextModel, editTextColor, editTextModelYear, editTextEngineSize, editTextHorsePower, editTextMileage, editTextFuelConsumption;
     private EditText editTextPrice, editTextAddress, editTextPostalCode, editTextCity, editTextDescription;
     private Button buttonAddImage, buttonSubmitListing;
@@ -53,18 +52,26 @@ public class CreateListingFragment extends Fragment {
     private UserViewModel userViewModel;
     private String encodedImage = null;
     private Spinner spinnerFuelType, spinnerMotorVehicleType, spinnerTransmissionType;
-    private Uri photoUri;
-    private File photoFile;
     private static final int PICK_IMAGE_REQUEST = 1;
     private static final int CAMERA_PIC_REQUEST = 1337;
 
-
+    /**
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return The root view of the fragment
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_create_listing, container, false);
 
-        // Initialize UI elements
         editTextBrand = view.findViewById(R.id.editText_brand);
         editTextModel = view.findViewById(R.id.editText_model);
         editTextColor = view.findViewById(R.id.editText_color);
@@ -88,15 +95,16 @@ public class CreateListingFragment extends Fragment {
         listingService = new ListingService(requireContext());
         userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
-        // Open gallery to select image
         buttonAddImage.setOnClickListener(v -> showImageSourceDialog());
 
-        // Submit listing
         buttonSubmitListing.setOnClickListener(v -> submitListing());
 
         return view;
     }
 
+    /**
+     * Shows a dialog to select image source
+     */
     private void showImageSourceDialog() {
         String[] options = {"Take Photo", "Select Photo"};
         new AlertDialog.Builder(requireContext())
@@ -111,11 +119,17 @@ public class CreateListingFragment extends Fragment {
                 .show();
     }
 
+    /**
+     * Opens the camera to take a photo
+     */
     private void openCamera() {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
     }
 
+    /**
+     * Opens the gallery to select an image
+     */
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
@@ -123,7 +137,18 @@ public class CreateListingFragment extends Fragment {
     }
 
 
-    // Handle the selected image
+    /**
+     * Handles the selected image
+     *
+     * @param requestCode The integer request code originally supplied to
+     *                    startActivityForResult(), allowing you to identify who this
+     *                    result came from.
+     * @param resultCode The integer result code returned by the child activity
+     *                   through its setResult().
+     * @param data An Intent, which can return result data to the caller
+     *               (various data can be attached to Intent "extras").
+     *
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -156,7 +181,11 @@ public class CreateListingFragment extends Fragment {
         }
     }
 
-    // Convert image to Base64
+    /**
+     * Converts bitmap to base64
+     * @param bitmap
+     * @return Base64 string
+     */
     private String encodeImage(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
@@ -164,12 +193,19 @@ public class CreateListingFragment extends Fragment {
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
+    /**
+     * Converts base64 string to byte array
+     * @param encodedString
+     * @return byte array
+     */
     private byte[] StringToByteArray(String encodedString) {
         byte[] bytes = Base64.decode(encodedString, Base64.DEFAULT);
         return bytes;
     }
 
-    // Submit listing
+    /**
+     * Submits the listing
+     */
     private void submitListing() {
         String brand = editTextBrand.getText().toString().trim();
         String model = editTextModel.getText().toString().trim();
@@ -199,7 +235,6 @@ public class CreateListingFragment extends Fragment {
         double fuelConsumption = Double.parseDouble(fuelConsumptionStr);
         double price = Double.parseDouble(priceStr);
 
-        // Get logged-in user ID
         Long userId = (userViewModel.getUser().getValue() != null) ? userViewModel.getUser().getValue().getUserId() : null;
         if (userId == null) {
             Toast.makeText(getActivity(), "User not logged in", Toast.LENGTH_SHORT).show();

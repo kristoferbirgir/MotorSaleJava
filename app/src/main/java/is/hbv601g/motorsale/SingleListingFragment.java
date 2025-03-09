@@ -22,12 +22,32 @@ public class SingleListingFragment extends Fragment {
     private FragmentSingleListingBinding binding;
     private ListingDTO listing;
 
+    /**
+     * Inflates the view for this fragment.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSingleListingBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
+    /**
+     * Called after onCreateView.
+     *
+     * @param view The View returned by onCreateView.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -49,6 +69,11 @@ public class SingleListingFragment extends Fragment {
         }
     }
 
+    /**
+     * Fetches a listing by its ID from the API.
+     *
+     * @param listingId
+     */
     private void fetchListingById(String listingId) {
         ListingService listingService = new ListingService(requireContext());
 
@@ -62,6 +87,11 @@ public class SingleListingFragment extends Fragment {
         });
     }
 
+    /**
+     * Populates the UI elements with the listing details.
+     *
+     * @param listing
+     */
     private void populateListingDetails(ListingDTO listing) {
         binding.tvVehicleName.setText(listing.getMotorVehicle().getBrand() + " " + listing.getMotorVehicle().getModel());
         binding.tvVehicleYear.setText("Year: " + listing.getMotorVehicle().getModelYear());
@@ -69,7 +99,6 @@ public class SingleListingFragment extends Fragment {
         binding.tvVehicleLocation.setText("Location: " + listing.getCity() + ", " + listing.getPostalCode());
         binding.tvVehicleDescription.setText("Description: " + listing.getDescription());
 
-        // Handle Base64 Image
         String base64String = listing.getImageBase64();
         if (base64String != null && !base64String.isEmpty()) {
             byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
