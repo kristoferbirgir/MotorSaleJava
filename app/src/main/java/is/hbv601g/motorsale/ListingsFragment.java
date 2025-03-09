@@ -5,9 +5,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import java.util.List;
@@ -25,6 +28,7 @@ public class ListingsFragment extends Fragment {
     private FragmentListingsBinding binding;
     private ListingService listingsService;
     private VehicleAdapter adapter;
+    private Button viewListingButton;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -43,17 +47,18 @@ public class ListingsFragment extends Fragment {
 
         // Setup RecyclerView
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        NavController navController = Navigation.findNavController(view);
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            fetchListings();
+            fetchListings(navController);
         });
 
         // Fetch listingsThe
-        fetchListings();
+        fetchListings(navController);
     }
 
 
-    private void fetchListings() {
+    private void fetchListings(NavController navController) {
         listingsService.findAll(listings -> {
             // If the fragment's view is destroyed, don't attempt to update the UI.
             if (binding == null) return;
@@ -71,7 +76,7 @@ public class ListingsFragment extends Fragment {
                     adapter.updateListings(listings);
                 } else {
                     // Otherwise, create a new adapter and set it to the RecyclerView.
-                    adapter = new VehicleAdapter(getContext(), listings);
+                    adapter = new VehicleAdapter(getContext(), listings, navController);
                     binding.recyclerView.setAdapter(adapter);
                 }
             }
