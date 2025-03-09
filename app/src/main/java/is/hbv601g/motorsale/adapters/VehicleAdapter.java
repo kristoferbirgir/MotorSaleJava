@@ -122,13 +122,19 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
         }
 
 
+        Bundle bundle = new Bundle();
+        if (listing.getListingId() != null) {
+            bundle.putString("listingId", String.valueOf(listing.getListingId()));
+        } else {
+            Log.e("VehicleAdapter", "Listing ID is null!");
+        }
         // Viktor, this setus up a button on each item in the main listings that when clicked will navigated
         // you to the login page, this naeeds to be changed to navigate you to a newly created fragment should check the diagrams
         // but the fragment will be called fragment_single_listing i think, then you will navigate to it and make it display all
         // the info about this listing, you can access the listing id but calling listing.getlistingId() and then make new method in
         // the service in order to call our API to fetch the info and then u populate the fragment with all the info I guess.
         holder.viewListingButton.setOnClickListener(v -> {
-            this.navController.navigate(R.id.loginFragment);
+            this.navController.navigate(R.id.singleListingFragment, bundle);
 
         });
     }

@@ -60,7 +60,27 @@ public class ListingService {
         });
     }
 
-
+    public void findById(String listingId, FindByIdCallback callback) {
+        String url = "listings/getListing?listingId=" + listingId;
+        networkingService.getRequest(url, new NetworkingService.VolleyRawCallback() {
+            @Override
+            public void onSuccess(String jsonResponse) {
+                try {
+                    Log.d("ListingService" , "API Response: " + jsonResponse);
+                    ListingDTO listing = gson.fromJson(jsonResponse, ListingDTO.class);
+                    callback.onFindByIdResult(listing);
+                } catch (Exception e) {
+                    Log.e("ListingService", "JSON parsing error", e);
+                    callback.onFindByIdResult(null);
+                }
+            }
+            @Override
+            public void onError(String error) {
+                Log.e("ListingService", "API Error: " + error);
+                callback.onFindByIdResult(null);
+            }
+        });
+    }
 
 
     public void createListing(Listing listing, FindByIdCallback callback) {

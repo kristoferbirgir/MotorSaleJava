@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_listingsFragment_to_userFragment"
             app:destination="@id/userFragment" />
+        <action
+            android:id="@+id/action_listingsFragment_to_singleListingFragment2"
+            app:destination="@id/singleListingFragment" />
 
     </fragment>
 
@@ -69,9 +72,13 @@
         tools:layout="@layout/fragment_create_listing">
 
     </fragment>
-        <!--<action
-        android:id="@+id/action_registerFragment_to_loginFragment"
-        app:destination="@id/loginFragment" />-->
+    <fragment
+        android:id="@+id/singleListingFragment"
+        android:name="is.hbv601g.motorsale.SingleListingFragment"
+        android:label="SingleListingFragment" />
+    <!--<action
+    android:id="@+id/action_registerFragment_to_loginFragment"
+    app:destination="@id/loginFragment" />-->
 
 
 
