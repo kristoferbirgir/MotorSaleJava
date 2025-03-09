@@ -33,6 +33,19 @@ public class ListingsFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    /**
+     * Inflates the fragment's view.
+     *
+     * @param inflater The LayoutInflater object that can be used to inflate
+     * any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's
+     * UI should be attached to.  The fragment should not add the view itself,
+     * but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     *
+     * @return
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentListingsBinding.inflate(inflater, container, false);
@@ -40,6 +53,13 @@ public class ListingsFragment extends Fragment {
         return binding.getRoot();
     }
 
+    /**
+     * Initializes the fragment's view.
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     * from a previous saved state as given here.
+     */
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -54,17 +74,18 @@ public class ListingsFragment extends Fragment {
             fetchListings(navController);
         });
 
-        // Fetch listingsThe
         fetchListings(navController);
     }
 
-
+    /**
+     * Fetches the list of vehicle listings from the server.
+     *
+     * @param navController
+     */
     private void fetchListings(NavController navController) {
         listingsService.findAll(listings -> {
-            // If the fragment's view is destroyed, don't attempt to update the UI.
             if (binding == null) return;
 
-            // Stop the refreshing animation if active.
             if (swipeRefreshLayout.isRefreshing()) {
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -72,11 +93,9 @@ public class ListingsFragment extends Fragment {
             if (listings == null || listings.isEmpty()) {
                 Toast.makeText(getContext(), "No listings found", Toast.LENGTH_SHORT).show();
             } else {
-                // If adapter is already initialized, update its listings.
                 if (adapter != null) {
                     adapter.updateListings(listings);
                 } else {
-                    // Otherwise, create a new adapter and set it to the RecyclerView.
                     adapter = new VehicleAdapter(getContext(), listings, navController, false);
                     binding.recyclerView.setAdapter(adapter);
                 }
@@ -84,10 +103,9 @@ public class ListingsFragment extends Fragment {
         });
     }
 
-
-
-
-
+    /**
+     * Destroys the fragment's view.
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();

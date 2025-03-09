@@ -30,6 +30,14 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private UserViewModel userViewModel;
 
+    /**
+     * Called when the activity is first created.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     *     previously being shut down then this Bundle contains the data it most
+     *     recently supplied in {@link #onSaveInstanceState}.  <b><i>Note: Otherwise it is null.</i></b>
+     *
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,25 +51,6 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-   /*     binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
-       /* BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.login) {
-                navController.navigate(R.id.loginFragment);
-            } else if (item.getItemId() == R.id.home) {
-                navController.navigate(R.id.listingsFragment);
-            }
-            return false;
-        });*/
-
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
@@ -69,11 +58,11 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
             if (itemId == R.id.login ) {
                 if (userViewModel.getUser().getValue() != null) {
-                    navController.navigate(R.id.userFragment); // Navigate to User Profile if logged in
+                    navController.navigate(R.id.userFragment);
                     return true;
                 }
                 else {
-                    navController.navigate(R.id.loginFragment); // Navigate to User Profile if logged in
+                    navController.navigate(R.id.loginFragment);
                     return true;
                 }
             }
@@ -88,34 +77,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
+    /**
+     * Inflates the options menu and adds items to it.
+     *
+     * @param menu The options menu in which you place your items.
+     *
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
-  /*  @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-
-        if (id == R.id.action_login) {  // Handle login button click
-            NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.loginFragment);  // Use the correct ID!
-            return true;
-        }
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-
-
-        return super.onOptionsItemSelected(item);
-    }*/
-
-
-
+    /**
+     * Called when an item in the options menu is selected.
+     *
+     * @return True if the item was handled, false otherwise.
+     */
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);

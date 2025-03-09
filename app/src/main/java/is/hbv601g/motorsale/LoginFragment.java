@@ -52,7 +52,7 @@ public class LoginFragment extends Fragment {
         passwordEditText = view.findViewById(R.id.passwordEditText);
         loginButton = view.findViewById(R.id.loginButton);
         userService = new UserService(requireContext());
-        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class); // Use ViewModelProvider
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
         loginButton.setOnClickListener(v -> attemptLogin());
 
@@ -113,6 +113,9 @@ public class LoginFragment extends Fragment {
         });
     }
 
+    /**
+     * Navigates to the profile fragment.
+     */
     private void navigateToProfile() {
         NavController navController = Navigation.findNavController(requireView());
         navController.navigate(R.id.action_loginFragment_to_listingsFragment);
