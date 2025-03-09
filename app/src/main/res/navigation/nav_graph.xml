@@ -41,6 +41,12 @@
         android:label="RegisterFragment"
         tools:layout="@layout/fragment_register" />
 
+    <fragment
+        android:id="@+id/userListingsFragment"
+        android:name="is.hbv601g.motorsale.UserListingsFragment"
+        android:label="My Listings"
+        tools:layout="@layout/fragment_user_listings" />
+
 
     <fragment
         android:id="@+id/userFragment"
@@ -50,6 +56,9 @@
         <action
             android:id="@+id/action_userFragment_to_createListingFragment"
             app:destination="@id/createListingFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_userListingsFragment"
+            app:destination="@id/userListingsFragment" />
 
     </fragment>
 

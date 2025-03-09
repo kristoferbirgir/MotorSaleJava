@@ -16,6 +16,7 @@ import java.util.List;
 import is.hbv601g.motorsale.DTOs.ListingDTO;
 import is.hbv601g.motorsale.entities.Listing;
 import is.hbv601g.motorsale.services.NetworkingService;
+import is.hbv601g.motorsale.viewModels.UserViewModel;
 
 /**
  * ListingsService handles operations related to vehicle listings using GSON for JSON parsing.
@@ -40,19 +41,11 @@ public class ListingService {
             @Override
             public void onSuccess(String jsonResponse) {
                 try {
-                    // 🔍 Debug: Print raw API response
                     Log.d("ListingsService", "API Response: " + jsonResponse);
-
-                    // Convert JSON response to List<ListingDTO>
                     Type listType = new TypeToken<List<ListingDTO>>() {}.getType();
                     List<ListingDTO> listings = gson.fromJson(jsonResponse, listType);
-
-                    // 🔍 Debug: Print parsed listings count
                     Log.d("ListingsService", "Parsed Listings Count: " + listings.size());
-
-                    // Return the parsed listings
                     callback.onFindAllResult(listings);
-
                 } catch (Exception e) {
                     Log.e("ListingsService", "JSON parsing error", e);
                     callback.onFindAllResult(null);
@@ -66,6 +59,9 @@ public class ListingService {
             }
         });
     }
+
+
+
 
     public void createListing(Listing listing, FindByIdCallback callback) {
         String listingJson = gson.toJson(listing);

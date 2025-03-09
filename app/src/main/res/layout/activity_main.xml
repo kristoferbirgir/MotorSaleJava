@@ -9,14 +9,16 @@
     tools:context=".MainActivity">
 
     <!-- Main content -->
-    <include layout="@layout/content_main"/>
+    <include layout="@layout/content_main"
+        android:layout_width="match_parent"
+        android:layout_height="780dp"/>
 
 
     <!-- Bottom Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="60dp"
         android:background="@color/unarnian_blue"
         android:layout_gravity="top" />
 

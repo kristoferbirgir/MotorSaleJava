@@ -3,6 +3,7 @@ package is.hbv601g.motorsale.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,12 +28,15 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
     private final List<ListingDTO> listings;
     private NavController navController;
 
-    public VehicleAdapter(Context context, List<ListingDTO> listings, NavController navController) {
+    private final boolean isUserListings;
+
+    public VehicleAdapter(Context context, List<ListingDTO> listings, NavController navController, boolean isUserListings) {
         this.context = context;
         this.listings = listings;
         this.navController = navController;
-
+        this.isUserListings = isUserListings;
     }
+
     public void updateListings(List<ListingDTO> newListings) {
         listings.clear();
         listings.addAll(newListings);
@@ -85,7 +89,20 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
 
         // Get Base64-encoded image string
         String base64String = listing.getImageBase64();
+        // Show edit button only in My Listings
+        if (isUserListings) {
+            holder.editListingButton.setVisibility(View.VISIBLE);
 
+            // Kristofer this sets up your stuff, I added everything that is needed up to the point where u need to start setting up
+            // the editing fragments and what not, u will just have to start switch to it from below as I am currently just taking
+            // navigating to the login when edit button is clicked, so u have to create a new fragment and send the request to our
+            // backend
+            holder.editListingButton.setOnClickListener(v -> {
+                navController.navigate(R.id.loginFragment);
+            });
+        } else {
+            holder.editListingButton.setVisibility(View.GONE);
+        }
         if (base64String != null && !base64String.isEmpty()) {
             try {
                 byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
@@ -122,20 +139,22 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
         return listings.size();
     }
 
-    public static class VehicleViewHolder extends RecyclerView.ViewHolder {
-        TextView vehicleName, vehicleYear, vehiclePrice, vehicleLocation;
-        ImageView vehicleImage;
-        Button viewListingButton;
+        public static class VehicleViewHolder extends RecyclerView.ViewHolder {
+            TextView vehicleName, vehicleYear, vehiclePrice, vehicleLocation;
+            ImageView vehicleImage;
+            Button viewListingButton, editListingButton;
 
-        public VehicleViewHolder(@NonNull View itemView) {
-            super(itemView);
-            vehicleName = itemView.findViewById(R.id.tvVehicleName);
-            vehicleYear = itemView.findViewById(R.id.tvVehicleYear);
-            vehiclePrice = itemView.findViewById(R.id.tvVehiclePrice);
-            vehicleLocation = itemView.findViewById(R.id.tvVehicleLocation);
-            vehicleImage = itemView.findViewById(R.id.ivVehicleImage);
-            viewListingButton = itemView.findViewById(R.id.viewListingButton);
-
+            public VehicleViewHolder(@NonNull View itemView) {
+                super(itemView);
+                vehicleName = itemView.findViewById(R.id.tvVehicleName);
+                vehicleYear = itemView.findViewById(R.id.tvVehicleYear);
+                vehiclePrice = itemView.findViewById(R.id.tvVehiclePrice);
+                vehicleLocation = itemView.findViewById(R.id.tvVehicleLocation);
+                vehicleImage = itemView.findViewById(R.id.ivVehicleImage);
+                viewListingButton = itemView.findViewById(R.id.viewListingButton);
+                editListingButton = itemView.findViewById(R.id.editListingButton);
+            }
         }
-    }
+
+
 }

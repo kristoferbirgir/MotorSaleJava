@@ -1,42 +1,35 @@
 package is.hbv601g.motorsale;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import java.util.List;
-import java.util.function.Consumer;
 
+import is.hbv601g.motorsale.DTOs.UserDTO;
 import is.hbv601g.motorsale.adapters.VehicleAdapter;
-import is.hbv601g.motorsale.databinding.FragmentListingsBinding;
-import is.hbv601g.motorsale.DTOs.ListingDTO;
+import is.hbv601g.motorsale.databinding.FragmentUserListingsBinding;
 import is.hbv601g.motorsale.services.ListingService;
+import is.hbv601g.motorsale.services.UserService;
+import is.hbv601g.motorsale.viewModels.UserViewModel;
 
-/**
- * Fragment that displays the list of vehicle listings.
- */
-public class ListingsFragment extends Fragment {
-
-    private FragmentListingsBinding binding;
-    private ListingService listingsService;
+public class UserListingsFragment extends Fragment {
+    private FragmentUserListingsBinding binding;
+    private UserService userService;
     private VehicleAdapter adapter;
-    private Button viewListingButton;
-
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentListingsBinding.inflate(inflater, container, false);
-        swipeRefreshLayout = binding.swipeRefreshLayout;
+        binding = FragmentUserListingsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -44,49 +37,44 @@ public class ListingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        listingsService = new ListingService(requireContext());
-
-        // Setup RecyclerView
+        userService = new UserService(requireContext());
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         NavController navController = Navigation.findNavController(view);
 
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            fetchListings(navController);
-        });
+        swipeRefreshLayout = binding.swipeRefreshLayout;
+        swipeRefreshLayout.setOnRefreshListener(() -> fetchUserListings(navController));
 
-        // Fetch listingsThe
-        fetchListings(navController);
+        fetchUserListings(navController);
     }
 
+    private void fetchUserListings(NavController navController) {
 
-    private void fetchListings(NavController navController) {
-        listingsService.findAll(listings -> {
-            // If the fragment's view is destroyed, don't attempt to update the UI.
+        UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+        UserDTO user = userViewModel.getUser().getValue();
+
+        if (user == null) {
+            Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Long userId = user.getUserId();
+        userService.fetchUserListings(userId, userListings -> {
             if (binding == null) return;
-
-            // Stop the refreshing animation if active.
             if (swipeRefreshLayout.isRefreshing()) {
                 swipeRefreshLayout.setRefreshing(false);
             }
 
-            if (listings == null || listings.isEmpty()) {
+            if (userListings == null || userListings.isEmpty()) {
                 Toast.makeText(getContext(), "No listings found", Toast.LENGTH_SHORT).show();
             } else {
-                // If adapter is already initialized, update its listings.
                 if (adapter != null) {
-                    adapter.updateListings(listings);
+                    adapter.updateListings(userListings);
                 } else {
-                    // Otherwise, create a new adapter and set it to the RecyclerView.
-                    adapter = new VehicleAdapter(getContext(), listings, navController, false);
+                    adapter = new VehicleAdapter(getContext(), userListings, navController, true);
                     binding.recyclerView.setAdapter(adapter);
                 }
             }
         });
     }
-
-
-
-
 
     @Override
     public void onDestroyView() {
