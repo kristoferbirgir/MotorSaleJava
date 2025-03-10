@@ -13,12 +13,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * NetworkingService is responsible for handling network requests using Volley.
@@ -77,6 +79,41 @@ public class NetworkingService {
         };
 
         requestQueue.add(request);
+    }
+
+    /**
+     * Sends a PATCH request with form-encoded data.
+     *
+     * @param endpoint  The API endpoint (e.g., "listings/update").
+     * @param formBody  The form-encoded request body.
+     * @param callback  A callback interface to handle the response or error.
+     */
+    public void patchRequestFormEncoded(String endpoint, String formBody, final VolleyCallback callback) {
+        String url = BASE_URL + endpoint;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.PATCH, url,
+                response -> {
+                    try {
+                        JSONObject jsonResponse = new JSONObject(response);
+                        callback.onSuccess(jsonResponse);
+                    } catch (JSONException e) {
+                        callback.onError("JSON parsing error: " + e.getMessage());
+                    }
+                },
+                error -> callback.onError("Network error: " + error.getMessage())
+        ) {
+            @Override
+            public byte[] getBody() {
+                return formBody.getBytes(StandardCharsets.UTF_8);
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=UTF-8";
+            }
+        };
+
+        requestQueue.add(stringRequest);
     }
 
     /**

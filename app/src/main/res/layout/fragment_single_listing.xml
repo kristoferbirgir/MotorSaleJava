@@ -11,7 +11,9 @@
         android:layout_marginStart="1dp"
         android:layout_marginTop="1dp"
         android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,6 +22,7 @@
             android:id="@+id/ivVehicleImage"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:contentDescription="vehicle image"
             android:scaleType="centerCrop" />
 
         <LinearLayout
@@ -42,6 +45,41 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Year"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvVehicleFuelType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Fuel type"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvVehicleEngineSize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Engine Size"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvVehicleHorsePower"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Horse Power"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvVehicleMileage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mileage"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvVehicleTransmission"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Transmission"
                 android:textSize="18sp" />
 
             <TextView
