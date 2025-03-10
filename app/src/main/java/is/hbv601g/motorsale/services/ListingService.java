@@ -11,6 +11,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import is.hbv601g.motorsale.DTOs.ListingDTO;
@@ -122,6 +124,44 @@ public class ListingService {
         }
     }
 
+    public void updateField(String listingId, String field, String newValue, UpdateCallback callback) {
+        try {
+            String encodedValue = URLEncoder.encode(newValue, StandardCharsets.UTF_8.toString());
+            String formBody = "new" + capitalizeFirstLetter(field.replace("update", "")) + "=" + encodedValue;
+
+            String url = "listings/" + listingId + "/" + field;
+
+            Log.d("ListingService", "PATCH URL: " + url);
+            Log.d("ListingService", "Form Body: " + formBody);
+
+            networkingService.patchRequestFormEncoded(url, formBody, new NetworkingService.VolleyCallback() {
+                @Override
+                public void onSuccess(JSONObject result) {
+                    Log.d("ListingService", "Update successful for " + field);
+                    callback.onUpdateResult(true);
+                }
+
+                @Override
+                public void onError(String error) {
+                    Log.e("ListingService", "Error updating " + field + ": " + error);
+                    callback.onUpdateResult(false);
+                }
+            });
+        } catch (Exception e) {
+            Log.e("ListingService", "Encoding error: " + e.getMessage());
+            callback.onUpdateResult(false);
+        }
+    }
+
+
+    private String capitalizeFirstLetter(String input) {
+        if (input == null || input.isEmpty()) {
+            return input;
+        }
+        return input.substring(0, 1).toUpperCase() + input.substring(1);
+    }
+
+
 
 
     /**
@@ -136,5 +176,11 @@ public class ListingService {
      */
     public interface FindByIdCallback {
         void onFindByIdResult(ListingDTO listing);
+    }
+    /**
+     * Interface for handling update results.
+     */
+    public interface UpdateCallback {
+        void onUpdateResult(boolean success);
     }
 }
