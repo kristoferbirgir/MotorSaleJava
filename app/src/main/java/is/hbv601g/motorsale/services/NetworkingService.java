@@ -81,6 +81,7 @@ public class NetworkingService {
         requestQueue.add(request);
     }
 
+
     /**
      * Sends a PATCH request with form-encoded data.
      *
@@ -89,7 +90,7 @@ public class NetworkingService {
      * @param callback  A callback interface to handle the response or error.
      */
     public void patchRequestFormEncoded(String endpoint, String formBody, final VolleyCallback callback) {
-        String url = BASE_URL + endpoint + "?" + formBody; // Append parameters to URL
+        String url = BASE_URL + endpoint + "?" + formBody;
         Log.d("NetworkingService", "📡 PATCH Request to: " + url);
 
         StringRequest stringRequest = new StringRequest(Request.Method.PATCH, url,
@@ -111,6 +112,7 @@ public class NetworkingService {
 
         requestQueue.add(stringRequest);
     }
+
 
 
 

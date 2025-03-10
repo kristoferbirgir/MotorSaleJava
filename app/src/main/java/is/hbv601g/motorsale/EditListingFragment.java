@@ -146,13 +146,16 @@ public class EditListingFragment extends Fragment {
     private void updateListing() {
         if (vehicleId == null) {
             Log.e("EditListingFragment", "❌ Error: Vehicle ID is missing. Cannot update.");
-            Toast.makeText(getActivity(), "Error: Vehicle ID is missing", Toast.LENGTH_SHORT).show();
             return;
         }
 
         Log.d("EditListingFragment", "🚀 Updating listing...");
 
-        // Updating vehicle fields
+        // Debugging: Log vehicleId and listingId
+        Log.d("EditListingFragment", "📌 Vehicle ID: " + vehicleId);
+        Log.d("EditListingFragment", "📌 Listing ID: " + listingId);
+
+        // Updating Motor Vehicle fields
         updateField("updateMileage", editTextMileage.getText().toString());
         updateField("updateEngineSize", editTextEngineSize.getText().toString());
         updateField("updateHorsePower", editTextHorsePower.getText().toString());
@@ -160,25 +163,27 @@ public class EditListingFragment extends Fragment {
         updateField("updateColor", editTextColor.getText().toString());
         updateField("updateModelYear", editTextModelYear.getText().toString());
 
-        // Updating listing-specific details
+        // Updating Listing fields
         updateListingField("updatePrice", editTextPrice.getText().toString());
         updateListingField("updateDescription", editTextDescription.getText().toString());
 
         Log.d("EditListingFragment", "✅ All update requests sent!");
-
-        Toast.makeText(getActivity(), "Updating listing...", Toast.LENGTH_SHORT).show();
     }
 
     private void updateField(String endpoint, String newValue) {
         if (!TextUtils.isEmpty(newValue)) {
+            Log.d("EditListingFragment", "📡 Sending PATCH request to MotorVehicle API: " + endpoint + " with value: " + newValue);
+
             motorVehicleService.updateField(vehicleId, endpoint, newValue, success -> {
-                if (!success) {
+                if (success) {
+                    Log.d("EditListingFragment", "✅ Successfully updated " + endpoint);
+                } else {
                     Log.e("EditListingFragment", "❌ Update failed for " + endpoint);
-                    Toast.makeText(getActivity(), "Update failed for " + endpoint, Toast.LENGTH_SHORT).show();
                 }
             });
         }
     }
+
 
     private void updateListingField(String endpoint, String newValue) {
         if (!TextUtils.isEmpty(newValue)) {
