@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
-
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
@@ -17,19 +16,18 @@ import java.util.List;
 
 import is.hbv601g.motorsale.DTOs.ListingDTO;
 import is.hbv601g.motorsale.entities.Listing;
-import is.hbv601g.motorsale.services.NetworkingService;
 import is.hbv601g.motorsale.viewModels.UserViewModel;
 
 /**
- * ListingsService handles operations related to vehicle listings using GSON for JSON parsing.
+ * Service class for handling operations related to vehicle listings.
+ * Uses Volley for networking and Gson for JSON parsing.
  */
 public class ListingService {
     private final NetworkingService networkingService;
-
     private final Gson gson;
 
     /**
-     * Constructor initializes the ListingsService with a NetworkingService instance.
+     * Constructor to initialize `ListingService`.
      *
      * @param context The application context used for networking requests.
      */
@@ -39,69 +37,82 @@ public class ListingService {
     }
 
     /**
-     * Finds all listings in the database.
+     * Fetches all listings from the backend.
      *
-     * @param callback
+     * @param callback Callback to handle the response (list of listings or error).
      */
     public void findAll(FindAllCallback callback) {
         networkingService.getRequest("listings", new NetworkingService.VolleyRawCallback() {
             @Override
             public void onSuccess(String jsonResponse) {
                 try {
-                    Log.d("ListingsService", "API Response: " + jsonResponse);
+                    Log.d("ListingService", "📡 API Response: " + jsonResponse);
                     Type listType = new TypeToken<List<ListingDTO>>() {}.getType();
                     List<ListingDTO> listings = gson.fromJson(jsonResponse, listType);
-                    Log.d("ListingsService", "Parsed Listings Count: " + listings.size());
+                    Log.d("ListingService", "✅ Parsed Listings Count: " + listings.size());
                     callback.onFindAllResult(listings);
                 } catch (Exception e) {
-                    Log.e("ListingsService", "JSON parsing error", e);
+                    Log.e("ListingService", "❌ JSON parsing error", e);
                     callback.onFindAllResult(null);
                 }
             }
 
             @Override
             public void onError(String error) {
-                Log.e("ListingsService", "API Error: " + error);
+                Log.e("ListingService", "❌ API Error: " + error);
                 callback.onFindAllResult(null);
             }
         });
     }
 
     /**
-     * Finds a listing by its ID.
+     * Fetches a listing by its ID.
      *
-     * @param listingId
-     * @param callback
+     * @param listingId The unique identifier of the listing.
+     * @param callback  Callback to handle the response (listing object or error).
      */
     public void findById(String listingId, FindByIdCallback callback) {
+        if (listingId == null) {
+            Log.e("ListingService", "❌ Invalid listing ID provided.");
+            callback.onFindByIdResult(null);
+            return;
+        }
+
         String url = "listings/getListing?listingId=" + listingId;
         networkingService.getRequest(url, new NetworkingService.VolleyRawCallback() {
             @Override
             public void onSuccess(String jsonResponse) {
                 try {
-                    Log.d("ListingService" , "API Response: " + jsonResponse);
+                    Log.d("ListingService", "📡 API Response: " + jsonResponse);
                     ListingDTO listing = gson.fromJson(jsonResponse, ListingDTO.class);
                     callback.onFindByIdResult(listing);
                 } catch (Exception e) {
-                    Log.e("ListingService", "JSON parsing error", e);
+                    Log.e("ListingService", "❌ JSON parsing error", e);
                     callback.onFindByIdResult(null);
                 }
             }
+
             @Override
             public void onError(String error) {
-                Log.e("ListingService", "API Error: " + error);
+                Log.e("ListingService", "❌ API Error: " + error);
                 callback.onFindByIdResult(null);
             }
         });
     }
 
     /**
-     * Creates a new listing in the database.
+     * Creates a new listing in the backend.
      *
-     * @param listing
-     * @param callback
+     * @param listing  The `Listing` object to be created.
+     * @param callback Callback to handle the response (created listing object or error).
      */
     public void createListing(Listing listing, FindByIdCallback callback) {
+        if (listing == null) {
+            Log.e("ListingService", "❌ Cannot create listing: Invalid data.");
+            callback.onFindByIdResult(null);
+            return;
+        }
+
         String listingJson = gson.toJson(listing);
         try {
             JSONObject jsonBody = new JSONObject(listingJson);
@@ -114,7 +125,7 @@ public class ListingService {
 
                 @Override
                 public void onError(String error) {
-                    Log.e("ListingService", "Error creating listing: " + error);
+                    Log.e("ListingService", "❌ Error creating listing: " + error);
                     callback.onFindByIdResult(null);
                 }
             });
@@ -124,45 +135,50 @@ public class ListingService {
         }
     }
 
+    /**
+     * Updates a specific field of a listing by sending a PATCH request.
+     *
+     * @param listingId The unique ID of the listing to update.
+     * @param field     The field to update (e.g., "updatePrice", "updateDescription").
+     * @param newValue  The new value to set for the field.
+     * @param callback  Callback to handle the update success or failure.
+     */
     public void updateField(String listingId, String field, String newValue, UpdateCallback callback) {
+        if (listingId == null || field == null || newValue == null) {
+            Log.e("ListingService", "❌ Invalid parameters: listingId=" + listingId + ", field=" + field + ", newValue=" + newValue);
+            callback.onUpdateResult(false);
+            return;
+        }
+
         try {
+            // Ensure special characters in the newValue are properly encoded
             String encodedValue = URLEncoder.encode(newValue, StandardCharsets.UTF_8.toString());
-            String formBody = "new" + capitalizeFirstLetter(field.replace("update", "")) + "=" + encodedValue;
 
-            String url = "listings/" + listingId + "/" + field;
+            // Construct API endpoint with query parameters
+            String endpoint = "listings/" + listingId + "/" + field;
+            String queryParams = "new" + field.substring(6) + "=" + encodedValue; // Converts "updatePrice" to "newPrice"
 
-            Log.d("ListingService", "PATCH URL: " + url);
-            Log.d("ListingService", "Form Body: " + formBody);
+            Log.d("ListingService", "📡 Sending PATCH request to: " + endpoint + "?" + queryParams);
 
-            networkingService.patchRequestFormEncoded(url, formBody, new NetworkingService.VolleyCallback() {
+            // Send PATCH request using NetworkingService
+            networkingService.patchRequestFormEncoded(endpoint, queryParams, new NetworkingService.VolleyCallback() {
                 @Override
                 public void onSuccess(JSONObject result) {
-                    Log.d("ListingService", "Update successful for " + field);
+                    Log.d("ListingService", "✅ Update successful for " + field);
                     callback.onUpdateResult(true);
                 }
 
                 @Override
                 public void onError(String error) {
-                    Log.e("ListingService", "Error updating " + field + ": " + error);
+                    Log.e("ListingService", "❌ Update failed for " + field + ": " + error);
                     callback.onUpdateResult(false);
                 }
             });
         } catch (Exception e) {
-            Log.e("ListingService", "Encoding error: " + e.getMessage());
+            Log.e("ListingService", "❌ Encoding error in updateField: " + e.getMessage());
             callback.onUpdateResult(false);
         }
     }
-
-
-    private String capitalizeFirstLetter(String input) {
-        if (input == null || input.isEmpty()) {
-            return input;
-        }
-        return input.substring(0, 1).toUpperCase() + input.substring(1);
-    }
-
-
-
 
     /**
      * Interface for handling multiple listings results.
@@ -177,6 +193,7 @@ public class ListingService {
     public interface FindByIdCallback {
         void onFindByIdResult(ListingDTO listing);
     }
+
     /**
      * Interface for handling update results.
      */

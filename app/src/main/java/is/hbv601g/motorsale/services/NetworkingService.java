@@ -89,32 +89,33 @@ public class NetworkingService {
      * @param callback  A callback interface to handle the response or error.
      */
     public void patchRequestFormEncoded(String endpoint, String formBody, final VolleyCallback callback) {
-        String url = BASE_URL + endpoint;
+        String url = BASE_URL + endpoint + "?" + formBody; // Append parameters to URL
+        Log.d("NetworkingService", "📡 PATCH Request to: " + url);
 
         StringRequest stringRequest = new StringRequest(Request.Method.PATCH, url,
                 response -> {
+                    Log.d("NetworkingService", "✅ Server Response: " + response);
                     try {
-                        JSONObject jsonResponse = new JSONObject(response);
+                        JSONObject jsonResponse = new JSONObject();
+                        jsonResponse.put("message", response);
                         callback.onSuccess(jsonResponse);
                     } catch (JSONException e) {
-                        callback.onError("JSON parsing error: " + e.getMessage());
+                        Log.e("NetworkingService", "❌ JSON Parsing Error: " + e.getMessage());
+                        callback.onError("JSON Parsing Error: " + e.getMessage());
                     }
                 },
-                error -> callback.onError("Network error: " + error.getMessage())
-        ) {
-            @Override
-            public byte[] getBody() {
-                return formBody.getBytes(StandardCharsets.UTF_8);
-            }
-
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded; charset=UTF-8";
-            }
-        };
+                error -> {
+                    Log.e("NetworkingService", "❌ Network Error: " + error.toString());
+                    callback.onError(error.toString());
+                });
 
         requestQueue.add(stringRequest);
     }
+
+
+
+
+
 
     /**
      * Callback interface for handling raw JSON responses.

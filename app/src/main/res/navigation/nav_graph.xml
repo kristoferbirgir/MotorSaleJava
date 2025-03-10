@@ -5,11 +5,13 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/listingsFragment">
 
+    <!-- Listings Fragment (Main Screen) -->
     <fragment
         android:id="@+id/listingsFragment"
         android:name="is.hbv601g.motorsale.ListingsFragment"
         android:label="@string/listings_fragment_label"
         tools:layout="@layout/fragment_listings">
+
         <action
             android:id="@+id/action_listingsFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
@@ -17,11 +19,11 @@
             android:id="@+id/action_listingsFragment_to_userFragment"
             app:destination="@id/userFragment" />
         <action
-            android:id="@+id/action_listingsFragment_to_singleListingFragment2"
+            android:id="@+id/action_listingsFragment_to_singleListingFragment"
             app:destination="@id/singleListingFragment" />
-
     </fragment>
 
+    <!-- Login Fragment -->
     <fragment
         android:id="@+id/loginFragment"
         android:name="is.hbv601g.motorsale.LoginFragment"
@@ -31,57 +33,65 @@
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
-
         <action
             android:id="@+id/action_loginFragment_to_listingsFragment"
             app:destination="@id/listingsFragment" />
-
     </fragment>
 
+    <!-- Register Fragment -->
     <fragment
         android:id="@+id/registerFragment"
         android:name="is.hbv601g.motorsale.RegisterFragment"
         android:label="RegisterFragment"
         tools:layout="@layout/fragment_register" />
 
+    <!-- User Listings Fragment -->
     <fragment
         android:id="@+id/userListingsFragment"
         android:name="is.hbv601g.motorsale.UserListingsFragment"
         android:label="My Listings"
         tools:layout="@layout/fragment_user_listings" />
 
-
+    <!-- User Fragment -->
     <fragment
         android:id="@+id/userFragment"
         android:name="is.hbv601g.motorsale.UserFragment"
         android:label="@string/user_fragment_label"
         tools:layout="@layout/fragment_user">
+
         <action
             android:id="@+id/action_userFragment_to_createListingFragment"
             app:destination="@id/createListingFragment" />
         <action
             android:id="@+id/action_userFragment_to_userListingsFragment"
             app:destination="@id/userListingsFragment" />
-
     </fragment>
 
+    <!-- Create Listing Fragment -->
     <fragment
         android:id="@+id/createListingFragment"
         android:name="is.hbv601g.motorsale.CreateListingFragment"
         android:label="@string/create_listing_fragment_label"
-        tools:layout="@layout/fragment_create_listing">
+        tools:layout="@layout/fragment_create_listing" />
 
-    </fragment>
+    <!-- Single Listing Fragment -->
     <fragment
         android:id="@+id/singleListingFragment"
         android:name="is.hbv601g.motorsale.SingleListingFragment"
         android:label="SingleListingFragment" />
-    <!--<action
-    android:id="@+id/action_registerFragment_to_loginFragment"
-    app:destination="@id/loginFragment" />-->
 
+    <!-- Edit Listing Fragment (Added for editing vehicle listings) -->
+    <fragment
+        android:id="@+id/editListingFragment"
+        android:name="is.hbv601g.motorsale.EditListingFragment"
+        android:label="Edit Listing"
+        tools:layout="@layout/fragment_edit_listing">
 
-
-
+        <!-- Argument for passing listingId to the EditListingFragment -->
+        <argument
+            android:name="listingId"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
 
 </navigation>
