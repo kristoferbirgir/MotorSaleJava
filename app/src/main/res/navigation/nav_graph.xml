@@ -65,6 +65,9 @@
         <action
             android:id="@+id/action_userFragment_to_userListingsFragment"
             app:destination="@id/userListingsFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_editUserFragment"
+            app:destination="@id/editUserFragment" />
     </fragment>
 
     <!-- Create Listing Fragment -->
@@ -90,6 +93,24 @@
         <!-- Argument for passing listingId to the EditListingFragment -->
         <argument
             android:name="listingId"
+            app:argType="string"
+            android:defaultValue="" />
+    </fragment>
+
+    <!-- Edit User Fragment (Added for editing user information) -->
+    <fragment
+        android:id="@+id/editUserFragment"
+        android:name="is.hbv601g.motorsale.EditUserFragment"
+        android:label="Edit User"
+        tools:layout="@layout/fragment_edit_user">
+
+        <action
+            android:id="@+id/action_editUserFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+
+        <!-- Argument for passing userId to the EditUserFragment -->
+        <argument
+            android:name="userId"
             app:argType="string"
             android:defaultValue="" />
     </fragment>

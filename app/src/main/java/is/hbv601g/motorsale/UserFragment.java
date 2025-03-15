@@ -20,6 +20,7 @@ import is.hbv601g.motorsale.services.ListingService;
 public class UserFragment extends Fragment {
     private Button createListingButton;
     private Button myListingsButton;
+    private Button editUserButton;
     private ListingService listingsService;
 
     public UserFragment() {
@@ -40,6 +41,12 @@ public class UserFragment extends Fragment {
         myListingsButton.setOnClickListener(v -> {
             NavController navController = Navigation.findNavController(v);
             navController.navigate(R.id.action_userFragment_to_userListingsFragment);
+        });
+
+        editUserButton = view.findViewById(R.id.editUserButton);
+        editUserButton.setOnClickListener(v -> {
+            NavController navController = Navigation.findNavController(v);
+            navController.navigate(R.id.action_userFragment_to_editUserFragment);
         });
 
         return view;

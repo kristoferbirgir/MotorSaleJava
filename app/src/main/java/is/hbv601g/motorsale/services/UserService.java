@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import is.hbv601g.motorsale.DTOs.ListingDTO;
@@ -161,6 +162,58 @@ public class UserService {
         });
     }
 
+    public void updateUserField(Long userId, String field, String newValue, UpdateCallBack callback) {
+        if (userId == null || field == null || newValue == null) {
+            Log.e("UserService", "Invalid input parameters");
+            callback.onUpdateResult(false);
+            return;
+        }
+        try {
+            String encodedValue = java.net.URLEncoder.encode(newValue, StandardCharsets.UTF_8.toString());
+            String endpoint = "User/" + field;
+            String queryParams = "userId=" + userId + "&new" + field.substring(6) + "=" + encodedValue;
+            Log.d("UserService", "Sending PATCH to: " + endpoint + "?" + queryParams);
+
+            networkingService.patchRequestFormEncoded(endpoint, queryParams, new NetworkingService.VolleyCallback() {
+                @Override
+                public void onSuccess(JSONObject result) {
+                    callback.onUpdateResult(true);
+                }
+                @Override
+                public void onError(String error) {
+                    callback.onUpdateResult(false);
+                }
+            });
+        } catch (Exception e) {
+            Log.e("UserService", "Error in updateUserField:" + e.getMessage());
+            callback.onUpdateResult(false);
+        }
+    }
+
+    public void fetchLoggedInUser(LoggedInCallback callback) {
+        String url = "User/loggedIn";
+        networkingService.getRequest(url, new NetworkingService.VolleyRawCallback() {
+            @Override
+            public void onSuccess(String jsonResponse) {
+                Log.d("UserService", "LoggedIn API Response: " + jsonResponse);
+                UserDTO user = gson.fromJson(jsonResponse, UserDTO.class);
+                callback.onFound(user);
+            }
+            @Override
+            public void onError(String error) {
+                Log.e("UserService", "LoggedIn API Error: " + error);
+                callback.onFound(null);
+            }
+        });
+    }
+
+    public interface LoggedInCallback {
+        void onFound(UserDTO userDTO);
+    }
+
+    public interface UpdateCallBack {
+        void onUpdateResult(boolean success);
+    }
 
 
 
