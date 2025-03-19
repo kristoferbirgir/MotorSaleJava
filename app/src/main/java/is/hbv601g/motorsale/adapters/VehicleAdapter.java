@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -21,6 +23,8 @@ import java.util.List;
 
 import is.hbv601g.motorsale.DTOs.ListingDTO;
 import is.hbv601g.motorsale.R;
+import is.hbv601g.motorsale.UserListingsFragment;
+import is.hbv601g.motorsale.services.ListingService;
 
 /**
  * Adapter class for displaying vehicle listings in a RecyclerView.
@@ -117,9 +121,26 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
                     Log.e("VehicleAdapter", "Listing ID is null, cannot navigate to edit page!");
                 }
             });
+            holder.deleteListingButton.setVisibility(View.VISIBLE);
+            ListingService listingService = new ListingService(context);
+            holder.deleteListingButton.setOnClickListener(v -> deleteListing(listing.getListingId(), listingService));
+
+
+
         } else {
             holder.editListingButton.setVisibility(View.GONE);
         }
+    }
+    public void deleteListing(Long listingId, ListingService listingService) {
+        listingService.deleteListing(listingId.toString(), success -> {
+            if (success) {
+                Toast.makeText(context, "Listing deleted successfully!", Toast.LENGTH_SHORT).show();
+                navController.navigate(R.id.userListingsFragment);
+
+            } else {
+                Toast.makeText(context, "Failed to delete listing", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -134,6 +155,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
         TextView vehicleName, vehicleYear, vehiclePrice, vehicleLocation;
         ImageView vehicleImage;
         Button viewListingButton, editListingButton;
+        ImageButton deleteListingButton;
 
         /**
          * Constructor for VehicleViewHolder.
@@ -149,6 +171,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
             vehicleImage = itemView.findViewById(R.id.ivVehicleImage);
             viewListingButton = itemView.findViewById(R.id.viewListingButton);
             editListingButton = itemView.findViewById(R.id.editListingButton);
+            deleteListingButton = itemView.findViewById(R.id.deleteListingButton);
         }
     }
 }

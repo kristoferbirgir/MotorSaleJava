@@ -81,6 +81,29 @@ public class NetworkingService {
         requestQueue.add(request);
     }
 
+    public void deleteRequest(String endpoint, final VolleyCallback callback) {
+        String url = BASE_URL + endpoint;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
+                response -> {
+                    Log.d("NetworkingService", "✅ Delete Success: " + response);
+                    try {
+                        JSONObject jsonResponse = new JSONObject();
+                        jsonResponse.put("message", response);
+                        callback.onSuccess(jsonResponse);
+                    } catch (JSONException e) {
+                        Log.e("NetworkingService", "JSON Parsing Error: " + e.getMessage());
+                        callback.onError("JSON Parsing Error: " + e.getMessage());
+                    }
+                },
+                error -> {
+                    Log.e("NetworkingService", "Delete Error: " + error.toString());
+                    callback.onError(error.toString());
+                });
+
+        requestQueue.add(stringRequest);
+    }
+
 
     /**
      * Sends a PATCH request with form-encoded data.

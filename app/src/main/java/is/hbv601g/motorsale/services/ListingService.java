@@ -181,6 +181,44 @@ public class ListingService {
     }
 
     /**
+     * Deletes a listing by its ID.
+     *
+     * @param listingId The ID of the listing to delete.
+     * @param callback  Callback to handle success or failure.
+     */
+    public void deleteListing(String listingId, DeleteCallback callback) {
+        if (listingId == null) {
+            Log.e("ListingService", "Cannot delete listing: ID is null.");
+            callback.onDeleteResult(false);
+            return;
+        }
+
+        String endpoint = "listings/deleteListing?listingId=" + listingId;
+
+        networkingService.deleteRequest(endpoint, new NetworkingService.VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject result) {
+                Log.d("ListingService", " Listing deleted successfully.");
+                callback.onDeleteResult(true);
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e("ListingService", "Error deleting listing: " + error);
+                callback.onDeleteResult(false);
+            }
+        });
+    }
+
+    /**
+     * Interface for handling delete results.
+     */
+    public interface DeleteCallback {
+        void onDeleteResult(boolean success);
+    }
+
+
+    /**
      * Interface for handling multiple listings results.
      */
     public interface FindAllCallback {
