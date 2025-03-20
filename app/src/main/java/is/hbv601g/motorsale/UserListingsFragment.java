@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.navigation.NavigationView;
 
 import is.hbv601g.motorsale.DTOs.UserDTO;
 import is.hbv601g.motorsale.adapters.VehicleAdapter;
@@ -26,10 +29,16 @@ public class UserListingsFragment extends Fragment {
     private UserService userService;
     private VehicleAdapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ImageButton deleteListingButton;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentUserListingsBinding.inflate(inflater, container, false);
+        View view = inflater.inflate(R.layout.fragment_listingitem, container, false);
+        deleteListingButton = view.findViewById(R.id.deleteListingButton);
+
+
+
         return binding.getRoot();
     }
 
