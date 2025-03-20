@@ -7,7 +7,7 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String email;
-    private int phoneNumber;
+    private Integer phoneNumber;
 
 
     public UserDTO(Long userId, String username, String firstName, String lastName, String email, int phoneNumber) {
@@ -60,7 +60,7 @@ public class UserDTO {
         this.email = email;
     }
 
-    public int getPhoneNumber() {
+    public Integer getPhoneNumber() {
         return phoneNumber;
     }
 

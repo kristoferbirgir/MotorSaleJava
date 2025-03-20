@@ -32,7 +32,7 @@
         <EditText
             android:id="@+id/editText_color"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:hint="Color" />
 
@@ -120,7 +120,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="10dp"
             android:text="Fuel Type" />
         <Spinner
             android:id="@+id/spinner_fuel_type"
@@ -153,11 +153,16 @@
             android:layout_marginBottom="30dp"
             android:entries="@array/transmission_type_values" />
 
+        <!-- Upload Image Button -->
         <Button
             android:id="@+id/button_upload_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Upload Image" />
+            android:text="Setja Mynd"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/button_dark_blue"
+            android:textColor="@android:color/white"
+            android:stateListAnimator="@null"/>
 
         <ImageView
             android:id="@+id/image_preview"
@@ -167,16 +172,16 @@
             android:layout_marginBottom="10dp"
             android:visibility="gone" />
 
+        <!-- Submit Listing Button -->
         <Button
             android:id="@+id/button_submit_listing"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="100dp"
-            android:text="Create Listing" />
-
-
-
+            android:text="Skrá Bifreið"
+            android:layout_marginBottom="50dp"
+            android:backgroundTint="@color/button_dark_blue"
+            android:textColor="@android:color/white"
+            android:stateListAnimator="@null"/>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
-

@@ -91,14 +91,21 @@
                     android:id="@+id/editListingButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Edit"
-                    android:visibility="gone"/>
+                    android:text="Breyta"
+                    android:visibility="gone"
+                    android:backgroundTint="@color/button_dark_blue"
+                    android:textColor="@android:color/white"
+                    android:stateListAnimator="@null"/>
 
                 <Button
                     android:id="@+id/viewListingButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="View Listing" />
+                    android:text="Skoða Bifreið"
+                    android:backgroundTint="@color/button_dark_blue"
+                    android:textColor="@android:color/white"
+                    android:stateListAnimator="@null"/>
+
             </LinearLayout>
 
         </LinearLayout>
