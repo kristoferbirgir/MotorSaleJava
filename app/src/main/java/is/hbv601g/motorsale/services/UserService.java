@@ -17,8 +17,7 @@ import is.hbv601g.motorsale.DTOs.ListingDTO;
 import is.hbv601g.motorsale.DTOs.UserDTO;
 
 /**
- * UserService handles user-related operations such as login.
- * It interacts with the backend server using NetworkingService.
+ * UserService handles user-related operations such as login, registration, fetching user details, and updates.
  */
 public class UserService {
     private final NetworkingService networkingService;
@@ -35,11 +34,11 @@ public class UserService {
     }
 
     /**
-     * Sends a login request to the server with the provided username and password.
+     * Sends a login request to the server and handles session persistence.
      *
-     * @param username The username of the user attempting to log in.
+     * @param username The username of the user.
      * @param password The password of the user.
-     * @param callback A callback interface to handle the login response.
+     * @param callback A callback interface to handle login response.
      */
     public void login(String username, String password, LoginCallback callback) {
         JSONObject jsonBody = new JSONObject();
@@ -55,36 +54,54 @@ public class UserService {
         networkingService.postRequest("User/login", jsonBody, new NetworkingService.VolleyCallback() {
             @Override
             public void onSuccess(JSONObject result) {
+                Log.d("UserService", "✅ Login Successful");
                 callback.onLoginResult(true);
             }
+
             @Override
             public void onError(String error) {
+                Log.e("UserService", "❌ Login Failed: " + error);
                 callback.onLoginResult(false);
             }
         });
     }
 
-
-
     /**
-     * Interface for handling login results.
+     * Fetches details of the currently logged-in user.
+     *
+     * @param callback Callback to handle user data.
      */
-    public interface LoginCallback {
-        /**
-         * Called when the login request completes.
-         *
-         * @param success True if login was successful, false otherwise.
-         */
-        void onLoginResult(boolean success);
+    public void fetchLoggedInUser(LoggedInCallback callback) {
+        String url = "User/loggedIn";  // ✅ Correct endpoint
+
+        networkingService.getRequest(url, new NetworkingService.VolleyRawCallback() {
+            @Override
+            public void onSuccess(String jsonResponse) {
+                Log.d("UserService", "✅ LoggedIn API Response: " + jsonResponse);
+                UserDTO user = gson.fromJson(jsonResponse, UserDTO.class);
+                callback.onFound(user);
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e("UserService", "❌ LoggedIn API Error: " + error);
+                callback.onFound(null);
+            }
+        });
     }
 
-    public void register(String username,
-                         String firstName,
-                         String lastName,
-                         String email,
-                         String password,
-                         int phoneNumber,
-                         RegisterCallback callback) {
+    /**
+     * Registers a new user.
+     *
+     * @param username The desired username.
+     * @param firstName User's first name.
+     * @param lastName User's last name.
+     * @param email User's email.
+     * @param password User's password.
+     * @param phoneNumber User's phone number.
+     * @param callback Callback for registration result.
+     */
+    public void register(String username, String firstName, String lastName, String email, String password, int phoneNumber, RegisterCallback callback) {
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("username", username);
@@ -99,72 +116,55 @@ public class UserService {
             return;
         }
 
-        // 'User/signup' hits POST /api/User/signup
         networkingService.postRequest("User/signup", jsonBody, new NetworkingService.VolleyCallback() {
             @Override
             public void onSuccess(JSONObject result) {
-                // Registration succeeded (HTTP 200)
                 callback.onRegisterResult(true);
             }
 
             @Override
             public void onError(String error) {
-                // Registration failed (HTTP 400 or something else)
                 callback.onRegisterResult(false);
             }
         });
     }
 
-    // Fetch user details by email
-    public void fetchUserByEmail(String email, findByUsernameCallback callback) {
-        String url = "User/?username=" + email; // Construct query URL
+    /**
+     * Fetches user details by email.
+     *
+     * @param email The email to search for.
+     * @param callback Callback to handle user data.
+     */
+    public void fetchUserByEmail(String email, FindByUsernameCallback callback) {
+        String url = "User/?username=" + email;
 
         networkingService.getRequest(url, new NetworkingService.VolleyRawCallback() {
             @Override
             public void onSuccess(String jsonResponse) {
-                Log.d("UserService", "API Response: " + jsonResponse);
+                Log.d("UserService", "✅ API Response: " + jsonResponse);
                 UserDTO user = gson.fromJson(jsonResponse, UserDTO.class);
-                callback.onFound(user); // ✅ Use callback to return user
-            }
-            @Override
-            public void onError(String error) {
-                Log.e("UserService", "API Error: " + error);
-                callback.onFound(null); // ✅ Return `null` to indicate failure
-            }
-        });
-    }
-
-    public void fetchUserListings(Long userId, FindUserListingsCallback callback) {
-        String url = "listings/listingsByUserId?userId=" + userId;
-        networkingService.getRequest(url, new NetworkingService.VolleyRawCallback() {
-            @Override
-            public void onSuccess(String jsonResponse) {
-                try {
-                    Log.d("ListingsService", "API Response: " + jsonResponse);
-                    Type listType = new TypeToken<List<ListingDTO>>() {}.getType();
-                    List<ListingDTO> listings = gson.fromJson(jsonResponse, listType);
-
-                    Log.d("ListingsService", "Parsed Listings Count: " + listings.size());
-
-                    callback.onFindAllResult(listings);
-
-                } catch (Exception e) {
-                    Log.e("ListingsService", "JSON parsing error", e);
-                    callback.onFindAllResult(null);
-                }
+                callback.onFound(user);
             }
 
             @Override
             public void onError(String error) {
-                Log.e("ListingsService", "API Error: " + error);
-                callback.onFindAllResult(null);
+                Log.e("UserService", "❌ API Error: " + error);
+                callback.onFound(null);
             }
         });
     }
 
-    public void updateUserField(Long userId, String field, String newValue, UpdateCallBack callback) {
+    /**
+     * Updates a specific field of the user profile.
+     *
+     * @param userId The user ID.
+     * @param field The field to update.
+     * @param newValue The new value.
+     * @param callback Callback for update status.
+     */
+    public void updateUserField(Long userId, String field, String newValue, UpdateCallback callback) {
         if (userId == null || field == null || newValue == null) {
-            Log.e("UserService", "Invalid input parameters");
+            Log.e("UserService", "❌ Invalid input parameters");
             callback.onUpdateResult(false);
             return;
         }
@@ -172,65 +172,86 @@ public class UserService {
             String encodedValue = java.net.URLEncoder.encode(newValue, StandardCharsets.UTF_8.toString());
             String endpoint = "User/" + field;
             String queryParams = "userId=" + userId + "&new" + field.substring(6) + "=" + encodedValue;
-            Log.d("UserService", "Sending PATCH to: " + endpoint + "?" + queryParams);
+            Log.d("UserService", "📡 Sending PATCH to: " + endpoint + "?" + queryParams);
 
             networkingService.patchRequestFormEncoded(endpoint, queryParams, new NetworkingService.VolleyCallback() {
                 @Override
                 public void onSuccess(JSONObject result) {
                     callback.onUpdateResult(true);
                 }
+
                 @Override
                 public void onError(String error) {
                     callback.onUpdateResult(false);
                 }
             });
         } catch (Exception e) {
-            Log.e("UserService", "Error in updateUserField:" + e.getMessage());
+            Log.e("UserService", "❌ Error in updateUserField: " + e.getMessage());
             callback.onUpdateResult(false);
         }
     }
 
-    public void fetchLoggedInUser(LoggedInCallback callback) {
-        String url = "User/loggedIn";
+    /**
+     * Fetches all listings for a given user.
+     *
+     * @param userId The user ID.
+     * @param callback Callback for listings result.
+     */
+    public void fetchUserListings(Long userId, FindUserListingsCallback callback) {
+        String url = "listings/listingsByUserId?userId=" + userId;
+
         networkingService.getRequest(url, new NetworkingService.VolleyRawCallback() {
             @Override
             public void onSuccess(String jsonResponse) {
-                Log.d("UserService", "LoggedIn API Response: " + jsonResponse);
-                UserDTO user = gson.fromJson(jsonResponse, UserDTO.class);
-                callback.onFound(user);
+                try {
+                    Log.d("ListingsService", "✅ API Response: " + jsonResponse);
+                    Type listType = new TypeToken<List<ListingDTO>>() {}.getType();
+                    List<ListingDTO> listings = gson.fromJson(jsonResponse, listType);
+                    callback.onFindAllResult(listings);
+                } catch (Exception e) {
+                    Log.e("ListingsService", "❌ JSON Parsing Error", e);
+                    callback.onFindAllResult(null);
+                }
             }
+
             @Override
             public void onError(String error) {
-                Log.e("UserService", "LoggedIn API Error: " + error);
-                callback.onFound(null);
+                Log.e("ListingsService", "❌ API Error: " + error);
+                callback.onFindAllResult(null);
             }
         });
     }
 
+    // Callback interfaces
     public interface LoggedInCallback {
         void onFound(UserDTO userDTO);
     }
 
-    public interface UpdateCallBack {
+    public interface UpdateCallback {
         void onUpdateResult(boolean success);
     }
-
-
 
     public interface RegisterCallback {
         void onRegisterResult(boolean success);
     }
 
-
-    public interface findByUsernameCallback {
+    public interface FindByUsernameCallback {
         void onFound(UserDTO userDTO);
     }
-    /**
-     * Interface for handling multiple listings results.
-     */
+
     public interface FindUserListingsCallback {
         void onFindAllResult(List<ListingDTO> listings);
     }
+    /**
+     * Interface for handling login results.
+     */
+    public interface LoginCallback {
+        /**
+         * Called when the login request completes.
+         *
+         * @param success True if login was successful, false otherwise.
+         */
+        void onLoginResult(boolean success);
+    }
+
 }
-
-

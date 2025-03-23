@@ -106,7 +106,12 @@
             android:id="@+id/button_save_changes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save Changes" />
+            android:text="Vista"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="@color/button_dark_blue"
+            android:textColor="@android:color/white"
+            android:stateListAnimator="@null"/>
+
 
     </LinearLayout>
 </ScrollView>
