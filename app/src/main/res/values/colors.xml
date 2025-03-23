@@ -2,12 +2,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- ✅ Navbar light color (Soft Unarnian Blue) -->
     <color name="navbar_light">#A9D3FF</color>
 
-    <!-- ✅ Darker Blue for buttons -->
     <color name="button_dark_blue">#5C9EFA</color>
 
-    <!-- ✅ White text for buttons -->
+    <color name="button_dark_red">#e6324b</color>
+
+
     <color name="button_text">#FFFFFF</color>
 </resources>

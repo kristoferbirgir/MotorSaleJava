@@ -39,6 +39,11 @@ public class NetworkingService {
         gson = new Gson();
     }
 
+
+
+
+
+
     /**
      * Retrieves the session ID stored in SharedPreferences.
      *
@@ -61,6 +66,18 @@ public class NetworkingService {
         editor.apply();
         Log.d("NetworkingService", "✅ Saved session ID: " + sessionId);
     }
+
+    /**
+     * Clears the saved session ID from SharedPreferences.
+     */
+    public void clearSession() {
+        SharedPreferences prefs = context.getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove("SESSION_ID");
+        editor.apply();
+        Log.d("NetworkingService", "Session ID cleared");
+    }
+
 
     /**
      * Extracts and saves session ID from response headers.
@@ -185,11 +202,11 @@ public class NetworkingService {
 
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
                 response -> {
-                    Log.d("NetworkingService", "✅ Delete Success: " + response);
+                    Log.d("NetworkingService", "Delete Success: " + response);
                     callback.onSuccess(new JSONObject());
                 },
                 error -> {
-                    Log.e("NetworkingService", "❌ Delete Error: " + error.toString());
+                    Log.e("NetworkingService", "Delete Error: " + error.toString());
                     callback.onError(error.toString());
                 }) {
             @Override

@@ -21,6 +21,14 @@
     <string name="username">Username</string>
     <string name="register">"Don't have an account? Register here."</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="deleteUser">Eyða Aðgang</string>
+    <string name="logout">Útskrá</string>
+    <string name="notendanafn_loading">Notendanafn: Loading…</string>
+    <string name="s_mi_loading">Sími: Loading…</string>
+    <string name="netfang_loading">Netfang: Loading…</string>
+    <string name="breyta_notendauppl_singum">Breyta Notendaupplýsingum</string>
+    <string name="skr_bifrei">Skrá Bifreið</string>
+    <string name="bifrei_ar_skr">Bifreiðar á Skrá</string>
 
     <string-array name="fuel_type_values">
         <item>PETROL</item>
