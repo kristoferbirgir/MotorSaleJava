@@ -15,6 +15,7 @@ import java.util.List;
 
 import is.hbv601g.motorsale.DTOs.ListingDTO;
 import is.hbv601g.motorsale.DTOs.UserDTO;
+import is.hbv601g.motorsale.viewModels.UserViewModel;
 
 /**
  * UserService handles user-related operations such as login, registration, fetching user details, and updates.
@@ -89,6 +90,50 @@ public class UserService {
             }
         });
     }
+    /**
+     * Sends a request to delete a user from the backend by ID and password.
+     *
+     * @param userId The ID of the user to be deleted.
+     * @param password The password of the user for verification.
+     * @param callback Callback to handle the success or failure of the delete operation.
+     */
+    public void deleteUser(String userId, String password, UserService.DeleteCallback callback) {
+        if (userId == null) {
+            Log.e("UserService", "Cannot delete User: ID is null.");
+            callback.onDeleteResult(false);
+            return;
+        }
+
+        String endpoint = "User/deleteUser?userId=" + userId + "&password=" + password;
+
+        networkingService.deleteRequest(endpoint, new NetworkingService.VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject result) {
+                Log.d("UserService", " User deleted successfully.");
+                callback.onDeleteResult(true);
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e("UserService", "Error deleting listing: " + error);
+                callback.onDeleteResult(false);
+            }
+        });
+    }
+
+    /**
+     * Signs out the currently logged-in user by clearing session storage
+     * and resetting the user in the provided ViewModel.
+     *
+     * @param userViewModel The UserViewModel to clear the user from.
+     */
+    public void signOut(UserViewModel userViewModel) {
+        networkingService.clearSession();
+        userViewModel.setUser(null);
+        Log.d("UserService", "User signed out");
+    }
+
+
 
     /**
      * Registers a new user.
@@ -223,24 +268,69 @@ public class UserService {
     }
 
     // Callback interfaces
+
+    /**
+     * Callback interface for handling the result of a logged-in user fetch operation.
+     */
     public interface LoggedInCallback {
+        /**
+         * Called when the user fetch request completes.
+         *
+         * @param userDTO The UserDTO if found, or null if the request failed.
+         */
         void onFound(UserDTO userDTO);
     }
 
+
+    /**
+     * Callback interface for handling the result of a user update operation.
+     */
     public interface UpdateCallback {
+        /**
+         * Called when the update request completes.
+         *
+         * @param success True if the update was successful, false otherwise.
+         */
         void onUpdateResult(boolean success);
     }
 
+    /**
+     * Callback interface for handling the result of a user registration request.
+     */
     public interface RegisterCallback {
+        /**
+         * Called when the registration request completes.
+         *
+         * @param success True if registration was successful, false otherwise.
+         */
         void onRegisterResult(boolean success);
     }
 
+
+    /**
+     * Callback interface for handling the result of fetching a user by username (email).
+     */
     public interface FindByUsernameCallback {
+        /**
+         * Called when the user fetch request completes.
+         *
+         * @param userDTO The UserDTO if found, or null if the request failed.
+         */
         void onFound(UserDTO userDTO);
     }
 
+    /**
+     * Interface for handling user listings callback.
+     */
     public interface FindUserListingsCallback {
         void onFindAllResult(List<ListingDTO> listings);
+    }
+
+    /**
+     * Interface for handling delete results.
+     */
+    public interface DeleteCallback {
+        void onDeleteResult(boolean success);
     }
     /**
      * Interface for handling login results.

@@ -31,7 +31,7 @@
                 android:id="@+id/userName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Notendanafn: Loading..."
+                android:text="@string/notendanafn_loading"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black"/>
@@ -40,7 +40,7 @@
                 android:id="@+id/userPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sími: Loading..."
+                android:text="@string/s_mi_loading"
                 android:textSize="16sp"
                 android:textColor="@android:color/black"/>
 
@@ -48,7 +48,7 @@
                 android:id="@+id/userEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Netfang: Loading..."
+                android:text="@string/netfang_loading"
                 android:textSize="16sp"
                 android:textColor="@android:color/black"/>
         </LinearLayout>
@@ -59,7 +59,7 @@
         android:id="@+id/editUserButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Breyta Notendaupplýsingum"
+        android:text="@string/breyta_notendauppl_singum"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/userCard"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +73,7 @@
         android:id="@+id/createListingButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Skrá Bifreið"
+        android:text="@string/skr_bifrei"
         android:layout_marginTop="12dp"
         app:layout_constraintTop_toBottomOf="@id/editUserButton"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,12 +82,11 @@
         android:textColor="@color/button_text"
         android:stateListAnimator="@null"/>
 
-    <!-- My Listings Button (Even Spacing Fix) -->
     <Button
         android:id="@+id/myListingsButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Bifreiðar á Skrá"
+        android:text="@string/bifrei_ar_skr"
         android:layout_marginTop="12dp"
         app:layout_constraintTop_toBottomOf="@id/createListingButton"
         app:layout_constraintStart_toStartOf="parent"
@@ -95,5 +94,37 @@
         android:backgroundTint="@color/button_dark_blue"
         android:textColor="@color/button_text"
         android:stateListAnimator="@null"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/myListingsButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/signoutButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/logout"
+            android:backgroundTint="@color/button_dark_blue"
+            android:textColor="@color/button_text"
+            android:stateListAnimator="@null" />
+
+        <Button
+            android:id="@+id/deleteUserButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/deleteUser"
+            android:backgroundTint="@color/button_dark_red"
+            android:textColor="@color/button_text"
+            android:stateListAnimator="@null" />
+    </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
