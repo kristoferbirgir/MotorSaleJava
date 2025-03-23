@@ -15,12 +15,9 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.navigation.NavigationView;
-
 import is.hbv601g.motorsale.DTOs.UserDTO;
 import is.hbv601g.motorsale.adapters.VehicleAdapter;
 import is.hbv601g.motorsale.databinding.FragmentUserListingsBinding;
-import is.hbv601g.motorsale.services.ListingService;
 import is.hbv601g.motorsale.services.UserService;
 import is.hbv601g.motorsale.viewModels.UserViewModel;
 
@@ -78,7 +75,7 @@ public class UserListingsFragment extends Fragment {
                 if (adapter != null) {
                     adapter.updateListings(userListings);
                 } else {
-                    adapter = new VehicleAdapter(getContext(), userListings, navController, true);
+                    adapter = new VehicleAdapter(getContext(), userListings, navController, true, userViewModel);
                     binding.recyclerView.setAdapter(adapter);
                 }
             }

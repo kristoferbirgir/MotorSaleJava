@@ -1,14 +1,11 @@
 package is.hbv601g.motorsale;
 
+
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.util.Log;
-import android.view.View;
 
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -20,9 +17,7 @@ import is.hbv601g.motorsale.databinding.ActivityMainBinding;
 import is.hbv601g.motorsale.viewModels.UserViewModel;
 
 import android.view.Menu;
-import android.view.MenuItem;
-
-import java.util.Objects;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,6 +66,16 @@ public class MainActivity extends AppCompatActivity {
                 navController.navigate(R.id.listingsFragment);
                 return true;
             }
+            if (userViewModel.getUser().getValue()!=null ){
+                if (itemId == R.id.favoritesFragment){
+                    navController.navigate(R.id.favoritesFragment);
+                    return true;
+                }
+            }
+            else {
+                Toast.makeText(this, "No user is logged in", Toast.LENGTH_SHORT).show();
+            }
+
 
             return NavigationUI.onNavDestinationSelected(item, navController);
         });
