@@ -106,6 +106,16 @@
                     android:textColor="@android:color/white"
                     android:stateListAnimator="@null"/>
 
+                <Button
+                    android:id="@+id/favoriteButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_to_favorites"
+                    android:backgroundTint="@color/button_dark_blue"
+                    android:textColor="@android:color/white"
+                    android:visibility="gone"
+                    android:stateListAnimator="@null"/>
+
             </LinearLayout>
 
         </LinearLayout>

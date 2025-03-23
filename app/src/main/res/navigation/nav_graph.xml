@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_listingsFragment_to_singleListingFragment"
             app:destination="@id/singleListingFragment" />
+        <action
+            android:id="@+id/action_listingsFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
     </fragment>
 
     <!-- Login Fragment -->
@@ -44,6 +47,12 @@
         android:name="is.hbv601g.motorsale.RegisterFragment"
         android:label="RegisterFragment"
         tools:layout="@layout/fragment_register" />
+
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="is.hbv601g.motorsale.FavoritesFragment"
+        android:label="Favorites"
+        tools:layout="@layout/fragment_favorites" />
 
     <!-- User Listings Fragment -->
     <fragment

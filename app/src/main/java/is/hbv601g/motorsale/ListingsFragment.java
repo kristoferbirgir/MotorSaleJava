@@ -1,26 +1,21 @@
 package is.hbv601g.motorsale;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import java.util.List;
-import java.util.function.Consumer;
-
 import is.hbv601g.motorsale.adapters.VehicleAdapter;
 import is.hbv601g.motorsale.databinding.FragmentListingsBinding;
-import is.hbv601g.motorsale.DTOs.ListingDTO;
 import is.hbv601g.motorsale.services.ListingService;
+import is.hbv601g.motorsale.viewModels.UserViewModel;
 
 /**
  * Fragment that displays the list of vehicle listings.
@@ -31,6 +26,7 @@ public class ListingsFragment extends Fragment {
     private ListingService listingsService;
     private VehicleAdapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private UserViewModel userViewModel;
 
     /**
      * Inflates the fragment's view.
@@ -95,7 +91,8 @@ public class ListingsFragment extends Fragment {
                 if (adapter != null) {
                     adapter.updateListings(listings);
                 } else {
-                    adapter = new VehicleAdapter(getContext(), listings, navController, false);
+                    userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+                    adapter = new VehicleAdapter(getContext(), listings, navController, false, userViewModel);
                     binding.recyclerView.setAdapter(adapter);
                 }
             }

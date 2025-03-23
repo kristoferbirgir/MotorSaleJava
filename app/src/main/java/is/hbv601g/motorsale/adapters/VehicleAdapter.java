@@ -23,8 +23,9 @@ import java.util.List;
 
 import is.hbv601g.motorsale.DTOs.ListingDTO;
 import is.hbv601g.motorsale.R;
-import is.hbv601g.motorsale.UserListingsFragment;
+import is.hbv601g.motorsale.data.FavoritesDbHelper;
 import is.hbv601g.motorsale.services.ListingService;
+import is.hbv601g.motorsale.viewModels.UserViewModel;
 
 /**
  * Adapter class for displaying vehicle listings in a RecyclerView.
@@ -35,20 +36,23 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
     private final List<ListingDTO> listings;
     private final NavController navController;
     private final boolean isUserListings;
+    private UserViewModel userViewModel;
 
     /**
      * Constructor for the VehicleAdapter.
      *
-     * @param context         The application context.
-     * @param listings        List of vehicle listings.
-     * @param navController   Navigation controller for fragment transitions.
-     * @param isUserListings  Flag indicating if the adapter is used for user's listings.
+     * @param context        The application context.
+     * @param listings       List of vehicle listings.
+     * @param navController  Navigation controller for fragment transitions.
+     * @param isUserListings Flag indicating if the adapter is used for user's listings.
+     * @param userViewModel the user view model associated with the adapter
      */
-    public VehicleAdapter(Context context, List<ListingDTO> listings, NavController navController, boolean isUserListings) {
+    public VehicleAdapter(Context context, List<ListingDTO> listings, NavController navController, boolean isUserListings, UserViewModel userViewModel) {
         this.context = context;
         this.listings = listings;
         this.navController = navController;
         this.isUserListings = isUserListings;
+        this.userViewModel = userViewModel;
     }
 
     /**
@@ -130,6 +134,39 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
         } else {
             holder.editListingButton.setVisibility(View.GONE);
         }
+
+        if (userViewModel.getUser().getValue() != null) {
+            String userId = String.valueOf(userViewModel.getUser().getValue().getUserId());
+            FavoritesDbHelper dbHelper = new FavoritesDbHelper(context);
+            boolean alreadySaved = dbHelper.isFavorite(listing.getListingId(), userId);
+
+
+            int currentDestId = navController.getCurrentDestination().getId();
+            Log.d("what", Integer.toString(currentDestId));
+
+            if (currentDestId == R.id.listingsFragment){
+                holder.favoriteButton.setVisibility(View.VISIBLE);
+
+            }
+            holder.favoriteButton.setEnabled(!alreadySaved);
+            // This heart is intentionally put here by Aser
+
+            holder.favoriteButton.setText(alreadySaved ? "Saved to favorites ❤️" : "❤️ Favorite");
+
+            holder.favoriteButton.setOnClickListener(v -> {
+                if (!dbHelper.isFavorite(listing.getListingId(), userId)) {
+                    dbHelper.addFavorite(userId, listing);
+                    holder.favoriteButton.setEnabled(false);
+                    // This heart is intentionally put here by Aser
+                    holder.favoriteButton.setText("Saved to favorites ❤️");
+                    Toast.makeText(context, "Listing saved to favorites", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            holder.favoriteButton.setVisibility(View.GONE);
+        }
+
+
     }
     public void deleteListing(Long listingId, ListingService listingService) {
         listingService.deleteListing(listingId.toString(), success -> {
@@ -154,7 +191,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
     public static class VehicleViewHolder extends RecyclerView.ViewHolder {
         TextView vehicleName, vehicleYear, vehiclePrice, vehicleLocation;
         ImageView vehicleImage;
-        Button viewListingButton, editListingButton;
+        Button viewListingButton, editListingButton, favoriteButton;
         ImageButton deleteListingButton;
 
         /**
@@ -172,6 +209,8 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
             viewListingButton = itemView.findViewById(R.id.viewListingButton);
             editListingButton = itemView.findViewById(R.id.editListingButton);
             deleteListingButton = itemView.findViewById(R.id.deleteListingButton);
+            favoriteButton = itemView.findViewById(R.id.favoriteButton);
+
         }
     }
 }
