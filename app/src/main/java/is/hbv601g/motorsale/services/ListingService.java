@@ -210,6 +210,11 @@ public class ListingService {
         });
     }
 
+    public void filterListings(String query, NetworkingService.VolleyRawCallback callback) {
+        networkingService.getRequest(query, callback);
+    }
+
+
     /**
      * Interface for handling delete results.
      */

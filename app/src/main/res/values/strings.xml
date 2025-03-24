@@ -50,4 +50,11 @@
         <item>AUTOMATIC</item>
         <item>MANUAL</item>
     </string-array>
+    <string name="filter">Filter</string>
+    <string name="veldu_merki">Veldu merki</string>
+    <string name="veldu_likan">Veldu líkan</string>
+    <string name="veldu_lit">Veldu lit</string>
+    <string name="veldu_girkassa">Veldu gírkassa</string>
+
+
 </resources>
