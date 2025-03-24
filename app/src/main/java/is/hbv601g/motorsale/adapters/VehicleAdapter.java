@@ -3,19 +3,21 @@ package is.hbv601g.motorsale.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,30 +38,19 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
     private final List<ListingDTO> listings;
     private final NavController navController;
     private final boolean isUserListings;
-    private UserViewModel userViewModel;
+    private final boolean isFavoritesView;
+    private final UserViewModel userViewModel;
 
-    /**
-     * Constructor for the VehicleAdapter.
-     *
-     * @param context        The application context.
-     * @param listings       List of vehicle listings.
-     * @param navController  Navigation controller for fragment transitions.
-     * @param isUserListings Flag indicating if the adapter is used for user's listings.
-     * @param userViewModel the user view model associated with the adapter
-     */
-    public VehicleAdapter(Context context, List<ListingDTO> listings, NavController navController, boolean isUserListings, UserViewModel userViewModel) {
+    public VehicleAdapter(Context context, List<ListingDTO> listings, NavController navController,
+                          boolean isUserListings, boolean isFavoritesView, UserViewModel userViewModel) {
         this.context = context;
         this.listings = listings;
         this.navController = navController;
         this.isUserListings = isUserListings;
+        this.isFavoritesView = isFavoritesView;
         this.userViewModel = userViewModel;
     }
 
-    /**
-     * Updates the vehicle listings in the adapter.
-     *
-     * @param newListings The new list of vehicle listings.
-     */
     public void updateListings(List<ListingDTO> newListings) {
         listings.clear();
         listings.addAll(newListings);
@@ -77,13 +68,11 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
     public void onBindViewHolder(@NonNull VehicleViewHolder holder, int position) {
         ListingDTO listing = listings.get(position);
 
-        // Set text values
         holder.vehicleName.setText(listing.getMotorVehicle().getBrand() + " " + listing.getMotorVehicle().getModel());
         holder.vehicleYear.setText(String.valueOf(listing.getMotorVehicle().getModelYear()));
-        holder.vehiclePrice.setText("$" + listing.getPrice());
-        holder.vehicleLocation.setText(listing.getCity() + ", " + listing.getPostalCode());
+        holder.vehiclePrice.setText("Verð: " + listing.getPrice() + " kr.");
+        holder.vehicleLocation.setText("Staðsetning: " + listing.getCity() + ", " + listing.getPostalCode());
 
-        // Decode Base64-encoded image and set it in ImageView
         String base64String = listing.getImageBase64();
         if (base64String != null && !base64String.isEmpty()) {
             try {
@@ -98,84 +87,82 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
             holder.vehicleImage.setImageResource(R.drawable.placeholder_car);
         }
 
-        // Pass listing ID in bundle for navigation
         Bundle bundle = new Bundle();
         if (listing.getListingId() != null) {
             bundle.putString("listingId", String.valueOf(listing.getListingId()));
-        } else {
-            Log.e("VehicleAdapter", "Listing ID is null!");
         }
 
-        // Navigate to Single Listing Fragment when clicked
-        holder.viewListingButton.setOnClickListener(v -> {
-            navController.navigate(R.id.singleListingFragment, bundle);
-        });
+        holder.cardView.setOnClickListener(v -> navController.navigate(R.id.singleListingFragment, bundle));
 
-        // Show edit button only in "My Listings"
         if (isUserListings) {
             holder.editListingButton.setVisibility(View.VISIBLE);
             holder.editListingButton.setOnClickListener(v -> {
                 if (listing.getListingId() != null) {
                     Bundle editBundle = new Bundle();
                     editBundle.putString("listingId", String.valueOf(listing.getListingId()));
-
-                    // Navigate to Edit Listing Fragment
                     navController.navigate(R.id.editListingFragment, editBundle);
-                } else {
-                    Log.e("VehicleAdapter", "Listing ID is null, cannot navigate to edit page!");
                 }
             });
+
             holder.deleteListingButton.setVisibility(View.VISIBLE);
             ListingService listingService = new ListingService(context);
             holder.deleteListingButton.setOnClickListener(v -> deleteListing(listing.getListingId(), listingService));
-
-
-
         } else {
             holder.editListingButton.setVisibility(View.GONE);
         }
 
+        // Favorite handling
         if (userViewModel.getUser().getValue() != null) {
             String userId = String.valueOf(userViewModel.getUser().getValue().getUserId());
             FavoritesDbHelper dbHelper = new FavoritesDbHelper(context);
-            boolean alreadySaved = dbHelper.isFavorite(listing.getListingId(), userId);
+            boolean[] isFavorite = {dbHelper.isFavorite(listing.getListingId(), userId)};
 
+            updateHeartIcon(holder.favoriteIcon, isFavorite[0]);
 
-            int currentDestId = navController.getCurrentDestination().getId();
-            Log.d("what", Integer.toString(currentDestId));
-
-            if (currentDestId == R.id.listingsFragment){
-                holder.favoriteButton.setVisibility(View.VISIBLE);
-
-            }
-            holder.favoriteButton.setEnabled(!alreadySaved);
-            // This heart is intentionally put here by Aser
-
-            holder.favoriteButton.setText(alreadySaved ? "Saved to favorites ❤️" : "❤️ Favorite");
-
-            holder.favoriteButton.setOnClickListener(v -> {
-                if (!dbHelper.isFavorite(listing.getListingId(), userId)) {
+            holder.favoriteIcon.setVisibility(View.VISIBLE);
+            holder.favoriteIcon.setOnClickListener(v -> {
+                isFavorite[0] = !isFavorite[0];
+                if (isFavorite[0]) {
                     dbHelper.addFavorite(userId, listing);
-                    holder.favoriteButton.setEnabled(false);
-                    // This heart is intentionally put here by Aser
-                    holder.favoriteButton.setText("Saved to favorites ❤️");
-                    Toast.makeText(context, "Listing saved to favorites", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Vistað í uppáhaldi", Toast.LENGTH_SHORT).show();
+                } else {
+                    dbHelper.removeFavorite(listing.getListingId(), userId);
+                    Toast.makeText(context, "Fjarlægt úr uppáhaldi", Toast.LENGTH_SHORT).show();
+
+                    // Remove from list only if in favorites fragment
+                    if (isFavoritesView) {
+                        int currentPosition = holder.getAdapterPosition();
+                        if (currentPosition != RecyclerView.NO_POSITION) {
+                            listings.remove(currentPosition);
+                            notifyItemRemoved(currentPosition);
+                            return;
+                        }
+                    }
                 }
+
+                updateHeartIcon(holder.favoriteIcon, isFavorite[0]);
             });
+
         } else {
-            holder.favoriteButton.setVisibility(View.GONE);
+            holder.favoriteIcon.setVisibility(View.GONE);
         }
-
-
     }
+
+
+    private void updateHeartIcon(ImageButton button, boolean isFavorite) {
+        int iconRes = isFavorite ? R.drawable.ic_favorite : R.drawable.ic_favorite_border;
+        int color = isFavorite ? R.color.button_dark_red : android.R.color.darker_gray;
+        button.setImageResource(iconRes);
+        button.setColorFilter(ContextCompat.getColor(context, color), PorterDuff.Mode.SRC_IN);
+    }
+
     public void deleteListing(Long listingId, ListingService listingService) {
         listingService.deleteListing(listingId.toString(), success -> {
             if (success) {
-                Toast.makeText(context, "Listing deleted successfully!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Skráningu eytt með góðum árangri!", Toast.LENGTH_SHORT).show();
                 navController.navigate(R.id.userListingsFragment);
-
             } else {
-                Toast.makeText(context, "Failed to delete listing", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Ekki tókst að eyða skráningu", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -191,26 +178,20 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
     public static class VehicleViewHolder extends RecyclerView.ViewHolder {
         TextView vehicleName, vehicleYear, vehiclePrice, vehicleLocation;
         ImageView vehicleImage;
-        Button viewListingButton, editListingButton, favoriteButton;
-        ImageButton deleteListingButton;
+        ImageButton editListingButton, deleteListingButton, favoriteIcon;
+        CardView cardView;
 
-        /**
-         * Constructor for VehicleViewHolder.
-         *
-         * @param itemView The item view.
-         */
         public VehicleViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardView = (CardView) itemView;
             vehicleName = itemView.findViewById(R.id.tvVehicleName);
             vehicleYear = itemView.findViewById(R.id.tvVehicleYear);
             vehiclePrice = itemView.findViewById(R.id.tvVehiclePrice);
             vehicleLocation = itemView.findViewById(R.id.tvVehicleLocation);
             vehicleImage = itemView.findViewById(R.id.ivVehicleImage);
-            viewListingButton = itemView.findViewById(R.id.viewListingButton);
             editListingButton = itemView.findViewById(R.id.editListingButton);
             deleteListingButton = itemView.findViewById(R.id.deleteListingButton);
-            favoriteButton = itemView.findViewById(R.id.favoriteButton);
-
+            favoriteIcon = itemView.findViewById(R.id.favoriteIcon);
         }
     }
 }

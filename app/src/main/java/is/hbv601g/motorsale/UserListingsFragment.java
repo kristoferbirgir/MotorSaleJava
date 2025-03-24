@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,21 +20,19 @@ import is.hbv601g.motorsale.databinding.FragmentUserListingsBinding;
 import is.hbv601g.motorsale.services.UserService;
 import is.hbv601g.motorsale.viewModels.UserViewModel;
 
+/**
+ * Fragment for displaying the listings created by the current user.
+ */
 public class UserListingsFragment extends Fragment {
+
     private FragmentUserListingsBinding binding;
     private UserService userService;
     private VehicleAdapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ImageButton deleteListingButton;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentUserListingsBinding.inflate(inflater, container, false);
-        View view = inflater.inflate(R.layout.fragment_listingitem, container, false);
-        deleteListingButton = view.findViewById(R.id.deleteListingButton);
-
-
-
         return binding.getRoot();
     }
 
@@ -54,7 +51,6 @@ public class UserListingsFragment extends Fragment {
     }
 
     private void fetchUserListings(NavController navController) {
-
         UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         UserDTO user = userViewModel.getUser().getValue();
 
@@ -62,6 +58,7 @@ public class UserListingsFragment extends Fragment {
             Toast.makeText(getContext(), "User not logged in", Toast.LENGTH_SHORT).show();
             return;
         }
+
         Long userId = user.getUserId();
         userService.fetchUserListings(userId, userListings -> {
             if (binding == null) return;
@@ -75,7 +72,15 @@ public class UserListingsFragment extends Fragment {
                 if (adapter != null) {
                     adapter.updateListings(userListings);
                 } else {
-                    adapter = new VehicleAdapter(getContext(), userListings, navController, true, userViewModel);
+                    // isUserListings = true, isFavoritesView = false
+                    adapter = new VehicleAdapter(
+                            requireContext(),
+                            userListings,
+                            navController,
+                            true,
+                            false,
+                            userViewModel
+                    );
                     binding.recyclerView.setAdapter(adapter);
                 }
             }

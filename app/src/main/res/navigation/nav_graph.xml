@@ -5,119 +5,82 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/listingsFragment">
 
-    <!-- Listings Fragment (Main Screen) -->
     <fragment
         android:id="@+id/listingsFragment"
         android:name="is.hbv601g.motorsale.ListingsFragment"
-        android:label="@string/listings_fragment_label"
+        android:label="Bílar á skrá"
         tools:layout="@layout/fragment_listings">
-
-        <action
-            android:id="@+id/action_listingsFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-        <action
-            android:id="@+id/action_listingsFragment_to_userFragment"
-            app:destination="@id/userFragment" />
-        <action
-            android:id="@+id/action_listingsFragment_to_singleListingFragment"
-            app:destination="@id/singleListingFragment" />
-        <action
-            android:id="@+id/action_listingsFragment_to_favoritesFragment"
-            app:destination="@id/favoritesFragment" />
+        <action android:id="@+id/action_listingsFragment_to_loginFragment" app:destination="@id/loginFragment" />
+        <action android:id="@+id/action_listingsFragment_to_userFragment" app:destination="@id/userFragment" />
+        <action android:id="@+id/action_listingsFragment_to_singleListingFragment" app:destination="@id/singleListingFragment" />
+        <action android:id="@+id/action_listingsFragment_to_favoritesFragment" app:destination="@id/favoritesFragment" />
     </fragment>
 
-    <!-- Login Fragment -->
     <fragment
         android:id="@+id/loginFragment"
         android:name="is.hbv601g.motorsale.LoginFragment"
-        android:label="@string/login_fragment_label"
+        android:label="Innskráning"
         tools:layout="@layout/fragment_login">
-
-        <action
-            android:id="@+id/action_loginFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_listingsFragment"
-            app:destination="@id/listingsFragment" />
+        <action android:id="@+id/action_loginFragment_to_registerFragment" app:destination="@id/registerFragment" />
+        <action android:id="@+id/action_loginFragment_to_listingsFragment" app:destination="@id/listingsFragment" />
     </fragment>
 
-    <!-- Register Fragment -->
     <fragment
         android:id="@+id/registerFragment"
         android:name="is.hbv601g.motorsale.RegisterFragment"
-        android:label="RegisterFragment"
+        android:label="Nýskráning"
         tools:layout="@layout/fragment_register" />
 
     <fragment
         android:id="@+id/favoritesFragment"
         android:name="is.hbv601g.motorsale.FavoritesFragment"
-        android:label="Favorites"
+        android:label="Uppáhalds"
         tools:layout="@layout/fragment_favorites" />
 
-    <!-- User Listings Fragment -->
     <fragment
         android:id="@+id/userListingsFragment"
         android:name="is.hbv601g.motorsale.UserListingsFragment"
-        android:label="My Listings"
+        android:label="Skráningar mínar"
         tools:layout="@layout/fragment_user_listings" />
 
-    <!-- User Fragment -->
     <fragment
         android:id="@+id/userFragment"
         android:name="is.hbv601g.motorsale.UserFragment"
-        android:label="@string/user_fragment_label"
+        android:label="Notandi"
         tools:layout="@layout/fragment_user">
-
-        <action
-            android:id="@+id/action_userFragment_to_createListingFragment"
-            app:destination="@id/createListingFragment" />
-        <action
-            android:id="@+id/action_userFragment_to_userListingsFragment"
-            app:destination="@id/userListingsFragment" />
-        <action
-            android:id="@+id/action_userFragment_to_editUserFragment"
-            app:destination="@id/editUserFragment" />
+        <action android:id="@+id/action_userFragment_to_createListingFragment" app:destination="@id/createListingFragment" />
+        <action android:id="@+id/action_userFragment_to_userListingsFragment" app:destination="@id/userListingsFragment" />
+        <action android:id="@+id/action_userFragment_to_editUserFragment" app:destination="@id/editUserFragment" />
     </fragment>
 
-    <!-- Create Listing Fragment -->
     <fragment
         android:id="@+id/createListingFragment"
         android:name="is.hbv601g.motorsale.CreateListingFragment"
-        android:label="@string/create_listing_fragment_label"
+        android:label="Ný skráning"
         tools:layout="@layout/fragment_create_listing" />
 
-    <!-- Single Listing Fragment -->
     <fragment
         android:id="@+id/singleListingFragment"
         android:name="is.hbv601g.motorsale.SingleListingFragment"
-        android:label="SingleListingFragment" />
+        android:label="Skráning" />
 
-    <!-- Edit Listing Fragment (Added for editing vehicle listings) -->
     <fragment
         android:id="@+id/editListingFragment"
         android:name="is.hbv601g.motorsale.EditListingFragment"
-        android:label="Edit Listing"
+        android:label="Breyta skráningu"
         tools:layout="@layout/fragment_edit_listing">
-
-        <!-- Argument for passing listingId to the EditListingFragment -->
         <argument
             android:name="listingId"
             app:argType="string"
             android:defaultValue="" />
     </fragment>
 
-    <!-- Edit User Fragment (Added for editing user information) -->
     <fragment
         android:id="@+id/editUserFragment"
         android:name="is.hbv601g.motorsale.EditUserFragment"
-        android:label="Edit User"
+        android:label="Breyta notanda"
         tools:layout="@layout/fragment_edit_user">
-
-        <action
-            android:id="@+id/action_editUserFragment_to_userFragment"
-            app:destination="@id/userFragment" />
-
-        <!-- Argument for passing userId to the EditUserFragment -->
+        <action android:id="@+id/action_editUserFragment_to_userFragment" app:destination="@id/userFragment" />
         <argument
             android:name="userId"
             app:argType="string"

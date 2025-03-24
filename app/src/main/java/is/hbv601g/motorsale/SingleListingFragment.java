@@ -95,15 +95,15 @@ public class SingleListingFragment extends Fragment {
     private void populateListingDetails(ListingDTO listing) {
         // Set vehicle name and model
         binding.tvVehicleName.setText(listing.getMotorVehicle().getBrand() + " " + listing.getMotorVehicle().getModel());
-        binding.tvVehicleYear.setText("Year: " + listing.getMotorVehicle().getModelYear());
-        binding.tvVehicleFuelType.setText("Fuel Type: " + listing.getMotorVehicle().getFuelType());
-        binding.tvVehicleEngineSize.setText("Engine Size: " + listing.getMotorVehicle().getEngineSize() + " L");
-        binding.tvVehicleHorsePower.setText("Horsepower: " + listing.getMotorVehicle().getHorsePower() + " HP");
-        binding.tvVehicleMileage.setText("Mileage: " + listing.getMotorVehicle().getMileage() + " km");
-        binding.tvVehicleTransmission.setText("Transmission: " + listing.getMotorVehicle().getTransmissionType());
-        binding.tvVehiclePrice.setText("Price: $" + listing.getPrice());
-        binding.tvVehicleLocation.setText("Location: " + listing.getCity() + ", " + listing.getPostalCode());
-        binding.tvVehicleDescription.setText("Description: " + listing.getDescription());
+        binding.tvVehicleYear.setText("Árgerð: " + listing.getMotorVehicle().getModelYear());
+        binding.tvVehicleFuelType.setText("Orkugjafi: " + listing.getMotorVehicle().getFuelType());
+        binding.tvVehicleEngineSize.setText("Vélarstærð: " + listing.getMotorVehicle().getEngineSize() + " L");
+        binding.tvVehicleHorsePower.setText("Hestöfl: " + listing.getMotorVehicle().getHorsePower() + " HP");
+        binding.tvVehicleMileage.setText("Akstur: " + listing.getMotorVehicle().getMileage() + " km");
+        binding.tvVehicleTransmission.setText("Skipting: " + listing.getMotorVehicle().getTransmissionType());
+        binding.tvVehiclePrice.setText("Verð: " + listing.getPrice() + " kr.");
+        binding.tvVehicleLocation.setText("Staðsetning: " + listing.getCity() + ", " + listing.getPostalCode());
+        binding.tvVehicleDescription.setText("Lýsing: " + listing.getDescription());
 
         String base64String = listing.getImageBase64();
         if (base64String != null && !base64String.isEmpty()) {
