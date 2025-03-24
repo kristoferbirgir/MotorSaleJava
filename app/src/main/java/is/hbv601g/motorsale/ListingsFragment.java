@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -12,6 +13,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import is.hbv601g.motorsale.adapters.VehicleAdapter;
 import is.hbv601g.motorsale.databinding.FragmentListingsBinding;
 import is.hbv601g.motorsale.services.ListingService;
@@ -75,7 +77,7 @@ public class ListingsFragment extends Fragment {
     /**
      * Fetches the list of vehicle listings from the server.
      *
-     * @param navController
+     * @param navController navigation controller to pass into adapter
      */
     private void fetchListings(NavController navController) {
         listingsService.findAll(listings -> {
@@ -88,11 +90,19 @@ public class ListingsFragment extends Fragment {
             if (listings == null || listings.isEmpty()) {
                 Toast.makeText(getContext(), "No listings found", Toast.LENGTH_SHORT).show();
             } else {
+                userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+
                 if (adapter != null) {
                     adapter.updateListings(listings);
                 } else {
-                    userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-                    adapter = new VehicleAdapter(getContext(), listings, navController, false, userViewModel);
+                    adapter = new VehicleAdapter(
+                            getContext(),
+                            listings,
+                            navController,
+                            false, // isUserListings
+                            false, // isFavoritesView
+                            userViewModel
+                    );
                     binding.recyclerView.setAdapter(adapter);
                 }
             }

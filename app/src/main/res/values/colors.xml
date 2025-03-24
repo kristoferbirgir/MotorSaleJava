@@ -8,6 +8,9 @@
 
     <color name="button_dark_red">#e6324b</color>
 
+    <color name="icon_blue">#4A90E2</color>
 
     <color name="button_text">#FFFFFF</color>
+
+    <color name="brand_blue">#007BFF</color>
 </resources>
