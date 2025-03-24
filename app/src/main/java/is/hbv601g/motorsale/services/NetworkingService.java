@@ -5,8 +5,12 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -15,6 +19,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,6 +120,17 @@ public class NetworkingService {
                     callback.onError(error.toString());
                 }) {
             @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                try {
+                    String charset = HttpHeaderParser.parseCharset(response.headers, "UTF-8");
+                    String jsonString = new String(response.data, charset);
+                    return Response.success(jsonString, HttpHeaderParser.parseCacheHeaders(response));
+                } catch (UnsupportedEncodingException e) {
+                    return Response.error(new ParseError(e));
+                }
+            }
+
+            @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
                 String sessionId = getSessionId();
@@ -127,6 +143,7 @@ public class NetworkingService {
 
         requestQueue.add(request);
     }
+
 
     /**
      * Sends a POST request to the specified API endpoint.
