@@ -10,10 +10,22 @@
         android:name="is.hbv601g.motorsale.ListingsFragment"
         android:label="Bílar á skrá"
         tools:layout="@layout/fragment_listings">
-        <action android:id="@+id/action_listingsFragment_to_loginFragment" app:destination="@id/loginFragment" />
-        <action android:id="@+id/action_listingsFragment_to_userFragment" app:destination="@id/userFragment" />
-        <action android:id="@+id/action_listingsFragment_to_singleListingFragment" app:destination="@id/singleListingFragment" />
-        <action android:id="@+id/action_listingsFragment_to_favoritesFragment" app:destination="@id/favoritesFragment" />
+        <action
+            android:id="@+id/action_listingsFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_listingsFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+        <action
+            android:id="@+id/action_listingsFragment_to_singleListingFragment"
+            app:destination="@id/singleListingFragment" />
+        <action
+            android:id="@+id/action_listingsFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
+        <!-- New action to launch the filter/sort overlay -->
+        <action
+            android:id="@+id/action_listingsFragment_to_filterSortFragment"
+            app:destination="@id/filterSortFragment" />
     </fragment>
 
     <fragment
@@ -21,8 +33,12 @@
         android:name="is.hbv601g.motorsale.LoginFragment"
         android:label="Innskráning"
         tools:layout="@layout/fragment_login">
-        <action android:id="@+id/action_loginFragment_to_registerFragment" app:destination="@id/registerFragment" />
-        <action android:id="@+id/action_loginFragment_to_listingsFragment" app:destination="@id/listingsFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_listingsFragment"
+            app:destination="@id/listingsFragment" />
     </fragment>
 
     <fragment
@@ -48,9 +64,15 @@
         android:name="is.hbv601g.motorsale.UserFragment"
         android:label="Notandi"
         tools:layout="@layout/fragment_user">
-        <action android:id="@+id/action_userFragment_to_createListingFragment" app:destination="@id/createListingFragment" />
-        <action android:id="@+id/action_userFragment_to_userListingsFragment" app:destination="@id/userListingsFragment" />
-        <action android:id="@+id/action_userFragment_to_editUserFragment" app:destination="@id/editUserFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_createListingFragment"
+            app:destination="@id/createListingFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_userListingsFragment"
+            app:destination="@id/userListingsFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_editUserFragment"
+            app:destination="@id/editUserFragment" />
     </fragment>
 
     <fragment
@@ -80,11 +102,20 @@
         android:name="is.hbv601g.motorsale.EditUserFragment"
         android:label="Breyta notanda"
         tools:layout="@layout/fragment_edit_user">
-        <action android:id="@+id/action_editUserFragment_to_userFragment" app:destination="@id/userFragment" />
+        <action
+            android:id="@+id/action_editUserFragment_to_userFragment"
+            app:destination="@id/userFragment" />
         <argument
             android:name="userId"
             app:argType="string"
             android:defaultValue="" />
     </fragment>
+
+    <!-- New FilterSortFragment definition -->
+    <fragment
+        android:id="@+id/filterSortFragment"
+        android:name="is.hbv601g.motorsale.FilterSortFragment"
+        android:label="Filter og Röðun"
+        tools:layout="@layout/fragment_filter_sort" />
 
 </navigation>
