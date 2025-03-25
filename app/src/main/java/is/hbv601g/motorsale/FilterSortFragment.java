@@ -14,9 +14,11 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.ColorLong;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.google.gson.Gson;
@@ -26,11 +28,15 @@ import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import is.hbv601g.motorsale.DTOs.ListingDTO;
 import is.hbv601g.motorsale.services.ListingService;
 import is.hbv601g.motorsale.services.NetworkingService;
+import is.hbv601g.motorsale.viewModels.UserViewModel;
 
 public class FilterSortFragment extends Fragment {
 
@@ -40,13 +46,16 @@ public class FilterSortFragment extends Fragment {
     private EditText editTextMinPrice, editTextMaxPrice;
     private RadioGroup radioGroupSortBy, radioGroupSortDirection;
     private Button buttonApplyFilters, buttonResetFilters;
+    private UserViewModel userViewModel;
 
     private ListingService listingService;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_filter_sort, container, false);
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
 
         // Bind UI elements
         spinnerCarBrand = view.findViewById(R.id.spinner_car_brand);
@@ -64,64 +73,111 @@ public class FilterSortFragment extends Fragment {
         buttonApplyFilters = view.findViewById(R.id.button_apply_filters);
         buttonResetFilters = view.findViewById(R.id.button_reset_filters);
 
-        listingService = new ListingService(requireContext());
+        userViewModel.getAllListings().observe(getViewLifecycleOwner(), listings -> {
+            if (listings == null || listings.isEmpty()) {
+                Toast.makeText(getContext(), "No listings available to populate filters", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            populateSpinners(listings);
+        });
 
-        setupSpinners();
+        listingService = new ListingService(requireContext());
 
         buttonApplyFilters.setOnClickListener(v -> applyFilters());
         buttonResetFilters.setOnClickListener(v -> resetFilters());
 
         return view;
+
     }
 
-    /**
-     * Populates spinners with sample data.
-     * Replace these static lists with dynamic API calls if available.
-     */
-    private void setupSpinners() {
-        // Car Brands
-        List<String> carBrands = new ArrayList<>();
-        carBrands.add(""); // Empty means "no filter"
-        carBrands.add("Toyota");
-        carBrands.add("Honda");
-        carBrands.add("BMW");
-        ArrayAdapter<String> adapterBrands = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_spinner_item, carBrands);
+    private List<ListingDTO> parseListingList(String jsonResponse) {
+        try {
+            Gson gson = new Gson();
+            Type listType = new TypeToken<List<ListingDTO>>(){}.getType();
+            return gson.fromJson(jsonResponse, listType);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    private void populateSpinners(List<ListingDTO> listings) {
+        // 1) Collect unique brand/model/color/transmission from the motorVehicle object
+        Set<String> brandSet = new HashSet<>();
+        Set<String> modelSet = new HashSet<>();
+        Set<String> colorSet = new HashSet<>();
+        Set<String> transSet = new HashSet<>();
+
+        for (ListingDTO listing : listings) {
+            if (listing.getMotorVehicle() != null) {
+                if (listing.getMotorVehicle().getBrand() != null) {
+                    brandSet.add(listing.getMotorVehicle().getBrand());
+                }
+                if (listing.getMotorVehicle().getModel() != null) {
+                    modelSet.add(listing.getMotorVehicle().getModel());
+                }
+                if (listing.getMotorVehicle().getColor() != null) {
+                    colorSet.add(listing.getMotorVehicle().getColor());
+                }
+                if (listing.getMotorVehicle().getTransmissionType() != null) {
+                    transSet.add(listing.getMotorVehicle().getTransmissionType().toString());
+                }
+            }
+        }
+
+        // 2) Convert sets to lists and sort
+        List<String> brands = new ArrayList<>(brandSet);
+        List<String> models = new ArrayList<>(modelSet);
+        List<String> colors = new ArrayList<>(colorSet);
+        List<String> transmissions = new ArrayList<>(transSet);
+
+        Collections.sort(brands);
+        Collections.sort(models);
+        Collections.sort(colors);
+        Collections.sort(transmissions);
+
+        // 3) Optionally prepend "" for “no filter”
+        brands.add(0, "Ekkert valið");
+        models.add(0, "Ekkert valið");
+        colors.add(0, "Ekkert valið");
+        transmissions.add(0, "Bæði");
+
+        // 4) Create adapters
+        ArrayAdapter<String> adapterBrands = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                brands
+        );
         adapterBrands.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCarBrand.setAdapter(adapterBrands);
 
-        // Car Models
-        List<String> carModels = new ArrayList<>();
-        carModels.add("");
-        carModels.add("Corolla");
-        carModels.add("Civic");
-        carModels.add("3 Series");
-        ArrayAdapter<String> adapterModels = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_spinner_item, carModels);
+        ArrayAdapter<String> adapterModels = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                models
+        );
         adapterModels.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCarModel.setAdapter(adapterModels);
 
-        // Car Colors (Icelandic examples)
-        List<String> carColors = new ArrayList<>();
-        carColors.add("");
-        carColors.add("Rautt");
-        carColors.add("Blátt");
-        carColors.add("Svart");
-        ArrayAdapter<String> adapterColors = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_spinner_item, carColors);
+        ArrayAdapter<String> adapterColors = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                colors
+        );
         adapterColors.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCarColor.setAdapter(adapterColors);
 
-        // Transmission types
-        List<String> transmissions = new ArrayList<>();
-        transmissions.add("");
-        transmissions.add("AUTOMATIC");
-        transmissions.add("MANUAL");
-        ArrayAdapter<String> adapterTrans = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_spinner_item, transmissions);
+        ArrayAdapter<String> adapterTrans = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                transmissions
+        );
         adapterTrans.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // 5) Assign to spinners
+        spinnerCarBrand.setAdapter(adapterBrands);
+        spinnerCarModel.setAdapter(adapterModels);
+        spinnerCarColor.setAdapter(adapterColors);
         spinnerTransmission.setAdapter(adapterTrans);
     }
+
 
     /**
      * Collects filter and sort parameters, builds a URL‑encoded query,
@@ -129,10 +185,10 @@ public class FilterSortFragment extends Fragment {
      */
     private void applyFilters() {
         // Retrieve filter values
-        String brand = spinnerCarBrand.getSelectedItem().toString();
-        String model = spinnerCarModel.getSelectedItem().toString();
-        String color = spinnerCarColor.getSelectedItem().toString();
-        String transmission = spinnerTransmission.getSelectedItem().toString();
+        String brand = spinnerCarBrand.getSelectedItem() != null ? spinnerCarBrand.getSelectedItem().toString() : "Ekkert valið";
+        String model = spinnerCarModel.getSelectedItem() != null ? spinnerCarModel.getSelectedItem().toString() : "Ekkert valið";
+        String color = spinnerCarColor.getSelectedItem() != null ? spinnerCarColor.getSelectedItem().toString() : "Ekkert valið";
+        String transmission = spinnerTransmission.getSelectedItem() != null ? spinnerTransmission.getSelectedItem().toString() : "Bæði";
 
         String minYear = editTextMinModelYear.getText().toString();
         String maxYear = editTextMaxModelYear.getText().toString();
@@ -168,70 +224,89 @@ public class FilterSortFragment extends Fragment {
             }
         }
 
-        // Build query string with URL‑encoding for special characters
-        StringBuilder queryBuilder = new StringBuilder("listings/filter?");
-        try {
-            if (!TextUtils.isEmpty(brand))
-                queryBuilder.append("brand=").append(URLEncoder.encode(brand, "UTF-8")).append("&");
-            if (!TextUtils.isEmpty(model))
-                queryBuilder.append("model=").append(URLEncoder.encode(model, "UTF-8")).append("&");
-            if (!TextUtils.isEmpty(color))
-                queryBuilder.append("color=").append(URLEncoder.encode(color, "UTF-8")).append("&");
-            if (!TextUtils.isEmpty(minYear))
-                queryBuilder.append("minYear=").append(URLEncoder.encode(minYear, "UTF-8")).append("&");
-            if (!TextUtils.isEmpty(maxYear))
-                queryBuilder.append("maxYear=").append(URLEncoder.encode(maxYear, "UTF-8")).append("&");
-            if (!TextUtils.isEmpty(minMileage))
-                queryBuilder.append("minMileage=").append(URLEncoder.encode(minMileage, "UTF-8")).append("&");
-            if (!TextUtils.isEmpty(maxMileage))
-                queryBuilder.append("maxMileage=").append(URLEncoder.encode(maxMileage, "UTF-8")).append("&");
-            if (!TextUtils.isEmpty(minPrice))
-                queryBuilder.append("minPrice=").append(URLEncoder.encode(minPrice, "UTF-8")).append("&");
-            if (!TextUtils.isEmpty(maxPrice))
-                queryBuilder.append("maxPrice=").append(URLEncoder.encode(maxPrice, "UTF-8")).append("&");
-            if (!TextUtils.isEmpty(transmission))
-                queryBuilder.append("transmission=").append(URLEncoder.encode(transmission, "UTF-8")).append("&");
-            if (!TextUtils.isEmpty(sortField))
-                queryBuilder.append("sortField=").append(URLEncoder.encode(sortField, "UTF-8")).append("&");
-            if (!TextUtils.isEmpty(sortDirection))
-                queryBuilder.append("sortDirection=").append(URLEncoder.encode(sortDirection, "UTF-8")).append("&");
-        } catch (Exception e) {
-            Log.e("FilterSortFragment", "Encoding error", e);
+        String endpoint;
+
+        if (!brand.equalsIgnoreCase("Ekkert valið")) {
+            // e.g. filterByCarBrand?brand=Toyota
+            endpoint = "listings/filterByCarBrand?brand=" + urlEncode(brand);
         }
-        // Remove trailing '&' or '?' if present
-        String query = queryBuilder.toString();
-        if (query.endsWith("&") || query.endsWith("?")) {
-            query = query.substring(0, query.length() - 1);
+        else if (!model.equalsIgnoreCase("Ekkert valið")) {
+            endpoint = "listings/filterByCarModel?model=" + urlEncode(model);
+        }
+        else if (!color.equalsIgnoreCase("Ekkert valið")) {
+            endpoint = "listings/filterByColor?color=" + urlEncode(color);
+        }
+        else if (!TextUtils.isEmpty(minPrice) && !TextUtils.isEmpty(maxPrice)) {
+            // e.g. filterByPrice?minPrice=300000&maxPrice=4000000
+            endpoint = "listings/filterByPrice?minPrice=" + minPrice + "&maxPrice=" + maxPrice;
+        }
+        else if (!transmission.equalsIgnoreCase("Bæði")) {
+            // e.g. filterByTransmission?transmissionType=AUTOMATIC
+            endpoint = "listings/filterByTransmission?transmissionType=" + urlEncode(transmission);
+        }
+        else {
+            // no filter => just fetch everything
+            listingService.findAll(listings -> {
+                if (listings == null) {
+                    Toast.makeText(getContext(), "No results.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // store or handle
+                userViewModel.setFilteredListings(listings);
+                Navigation.findNavController(requireView()).popBackStack();
+            });
+            return; // end here
         }
 
-        Log.d("FilterSortFragment", "Filter query: " + query);
-
+        Log.d("FilterSortFragment", "Filter query: " + endpoint);
         // Call the backend using the filterListings method.
-        listingService.filterListings(query, new NetworkingService.VolleyRawCallback() {
+
+        listingService.filterListings(endpoint, new NetworkingService.VolleyRawCallback() {
             @Override
             public void onSuccess(String jsonResponse) {
+                // parse the JSON here or let ListingService do it in callback
+                // ListingService returns raw JSON, so parse manually or create a similar callback
+                Type listType = new TypeToken<List<ListingDTO>>() {}.getType();
+                List<ListingDTO> filtered;
                 try {
-                    Gson gson = new Gson();
-                    Type listType = new TypeToken<List<ListingDTO>>(){}.getType();
-                    List<ListingDTO> filteredListings = gson.fromJson(jsonResponse, listType);
-                    Log.d("FilterSortFragment", "Filtered Listings Count: " + filteredListings.size());
-
-                    // TODO: Pass the filtered listings back to the HomeFragment,
-                    // for example using a shared ViewModel.
-                    // Then navigate back:
-                    Navigation.findNavController(requireView()).popBackStack();
+                    filtered = new Gson().fromJson(jsonResponse, listType);
                 } catch (Exception e) {
-                    Log.e("FilterSortFragment", "JSON parsing error", e);
-                    Toast.makeText(getContext(), "Villa við að vinna úr niðurstöðum", Toast.LENGTH_SHORT).show();
+                    Log.e("FilterSortFragment", "JSON parse error", e);
+                            filtered = null;
+                }
+
+                if (filtered == null || filtered.isEmpty()) {
+                    Toast.makeText(getContext(), "No results.", Toast.LENGTH_SHORT).show();
+                } else {
+                    userViewModel.setFilteredListings(filtered);
+                    // Guard against a destroyed fragment:
+                    if (!isAdded() || getView() == null) {
+                        return;
+                    }
+                // go back to previous screen
+                Navigation.findNavController(requireView()).popBackStack();
                 }
             }
 
             @Override
             public void onError(String error) {
                 Log.e("FilterSortFragment", "API Error: " + error);
-                Toast.makeText(getContext(), "Villa við að sækja niðurstöður", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Filter failed: " + error, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    /**
+     *  Helper method to safely URL-encode
+     * @param value
+     * @return
+     */
+    private String urlEncode(String value) {
+        try {
+            return URLEncoder.encode(value, "UTF-8");
+        } catch (Exception e) {
+            return value; // fallback
+        }
     }
 
     /**
