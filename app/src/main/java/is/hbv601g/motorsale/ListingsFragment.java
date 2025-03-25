@@ -15,7 +15,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import java.util.ArrayList;
 
 import is.hbv601g.motorsale.adapters.VehicleAdapter;
 import is.hbv601g.motorsale.databinding.FragmentListingsBinding;
@@ -29,6 +32,7 @@ public class ListingsFragment extends Fragment {
     private VehicleAdapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private UserViewModel userViewModel;
+    private RecyclerView recyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,11 +54,33 @@ public class ListingsFragment extends Fragment {
         listingsService = new ListingService(requireContext());
 
         // Setup RecyclerView
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         NavController navController = Navigation.findNavController(view);
 
-        swipeRefreshLayout.setOnRefreshListener(() -> fetchListings(navController));
-        fetchListings(navController);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
+
+        adapter = new VehicleAdapter(
+                getContext(),
+                new ArrayList<>(),
+                Navigation.findNavController(requireView()),
+                false, // isUserListings
+                false, // isFavoritesView
+                userViewModel
+        );
+        binding.recyclerView.setAdapter(adapter);
+
+        userViewModel.getFilteredListings().observe(getViewLifecycleOwner(), filteredListings -> {
+            if (filteredListings != null && !filteredListings.isEmpty()) {
+                adapter.updateListings(filteredListings);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        if (userViewModel.getFilteredListings().getValue() == null || userViewModel.getFilteredListings().getValue().isEmpty()) {
+            swipeRefreshLayout.setOnRefreshListener(() -> fetchListings(navController));
+            fetchListings(navController);
+        }
     }
 
     private void fetchListings(NavController navController) {
@@ -69,7 +95,7 @@ public class ListingsFragment extends Fragment {
                 Toast.makeText(getContext(), "No listings found", Toast.LENGTH_SHORT).show();
             } else {
                 userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-
+                userViewModel.setAllListings(listings);
                 if (adapter != null) {
                     adapter.updateListings(listings);
                 } else {
@@ -82,6 +108,7 @@ public class ListingsFragment extends Fragment {
                             userViewModel
                     );
                     binding.recyclerView.setAdapter(adapter);
+                    binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 }
             }
         });
