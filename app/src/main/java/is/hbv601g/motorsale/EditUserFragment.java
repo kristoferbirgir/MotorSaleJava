@@ -59,6 +59,13 @@ public class EditUserFragment extends Fragment {
         saveButton.setOnClickListener(v -> updateUserInfo());
     }
 
+
+    /**
+     * Collects updated user input from UI fields and sends PATCH requests to update
+     * user details (username, email, phone number, and password). After all updates are sent,
+     * fetches the latest user data and navigates back to the user profile fragment.
+     */
+
     private void updateUserInfo() {
         String newUsername = editTextUsername.getText().toString().trim();
         String newEmail = editTextEmailAddress.getText().toString().trim();

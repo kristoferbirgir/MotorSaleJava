@@ -50,6 +50,14 @@ public class UserListingsFragment extends Fragment {
         fetchUserListings(navController);
     }
 
+    /**
+     * Fetches listings created by the currently logged-in user.
+     * Updates the RecyclerView with the listings or displays a toast if none are found.
+     * Also handles swipe-to-refresh state.
+     *
+     * @param navController The NavController for navigation purposes.
+     */
+
     private void fetchUserListings(NavController navController) {
         UserViewModel userViewModel = new ViewModelProvider(requireActivity()).get(UserViewModel.class);
         UserDTO user = userViewModel.getUser().getValue();

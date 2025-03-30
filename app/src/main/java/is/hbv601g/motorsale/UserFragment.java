@@ -88,12 +88,28 @@ public class UserFragment extends Fragment {
         return view;
     }
 
+
+    /**
+     * Initiates the user deletion process by showing a password confirmation dialog,
+     * if a user is currently logged in.
+     *
+     * @param navController The NavController used for navigation upon successful deletion.
+     */
+
     private void deleteMyUser(NavController navController) {
         if (userViewModel.getUser().getValue() != null) {
             showPasswordDialog(navController);
         }
     }
 
+
+
+    /**
+     * Displays a dialog prompting the user to enter their password for account deletion.
+     * On confirmation, proceeds to delete the user using the provided credentials.
+     *
+     * @param navController The NavController used for navigation after deletion.
+     */
 
     private void showPasswordDialog(NavController navController) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -126,6 +142,15 @@ public class UserFragment extends Fragment {
     }
 
 
+    /**
+     * Calls the backend to delete the current user using their ID and password.
+     * If successful, signs the user out and navigates back to the listings screen.
+     *
+     * @param UserId        The ID of the user to delete.
+     * @param password      The user's password for authentication.
+     * @param navController The NavController used for navigation after deletion.
+     */
+
     public void deleteUser(Long UserId, String password, NavController navController) {
         userService.deleteUser(UserId.toString(), password, success -> {
             if (success) {
@@ -139,6 +164,11 @@ public class UserFragment extends Fragment {
         });
     }
 
+
+    /**
+     * Fetches the logged-in user's information from the backend and updates the UI
+     * and view model accordingly. Displays a toast if the request fails.
+     */
 
     private void fetchLoggedInUser() {
         userService.fetchLoggedInUser(userDTO -> {
