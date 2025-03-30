@@ -16,3 +16,9 @@ Project in Software Project II course in HÍ, the project will be based on creat
 - After discussion, the user stories were split up between the development team.
 - These user stories include a mobile specific user story which allows the user to take a photo when creating a listing.
 - Product owner: Janus Bjarki Birgisson
+
+### 30th March, 2025 - Sprint 3
+- User stories 8-12 have been iplemented.
+- After dividing the stories among the development team, the work went rather smoothly with one exception.
+- We encountered some difficulties with implementing the sort and filter functionality, as the backend did not support a single query for multiple filters. We had initially implemented the backend with a separate endpoint for each filter. Because of this, it took us longer than expected to find a way to make it work. If the user selects both sorting and filtering, all the filtering happens in the backend. The lists returned from the backend are then intersected, and the intersection is sorted in the app if the user selects a sorting mechanism.
+- Product owner: Viktor Örlygur Andrason
