@@ -80,5 +80,29 @@ public class ListingDTO {
     }
 
 
+    /**
+     * Determines equality between two ListingDTO objects based on their listing ID.
+     *
+     * @param obj The object to compare with.
+     * @return true if the listing IDs are equal, false otherwise.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        ListingDTO other = (ListingDTO) obj;
+        return this.listingId.equals(other.listingId); // or whatever uniquely identifies a listing
+    }
+
+    /**
+     * Returns the hash code for this listing, derived from its listing ID.
+     *
+     * @return The hash code of the listing ID.
+     */
+    @Override
+    public int hashCode() {
+        return listingId.hashCode();
+    }
+
 
 }

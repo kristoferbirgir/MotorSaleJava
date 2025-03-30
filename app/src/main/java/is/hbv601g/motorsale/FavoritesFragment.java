@@ -46,6 +46,13 @@ public class FavoritesFragment extends Fragment {
         return view;
     }
 
+
+    /**
+     * Loads the current user's favorite listings from the local database.
+     * Displays a toast if no favorites are found and sets up the RecyclerView adapter
+     * with the loaded listings.
+     */
+
     private void loadFavorites() {
         if (userViewModel.getUser().getValue() == null) return;
 

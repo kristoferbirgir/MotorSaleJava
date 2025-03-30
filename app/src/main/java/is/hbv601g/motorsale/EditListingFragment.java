@@ -170,6 +170,14 @@ public class EditListingFragment extends Fragment {
         Log.d("EditListingFragment", "✅ All update requests sent!");
     }
 
+    /**
+     * Sends a PATCH request to update a motor vehicle field with a new value,
+     * only if the new value is not empty. Logs success or failure.
+     *
+     * @param endpoint The specific backend endpoint for the field update (e.g., "updateMileage").
+     * @param newValue The new value to apply to the field.
+     */
+
     private void updateField(String endpoint, String newValue) {
         if (!TextUtils.isEmpty(newValue)) {
             Log.d("EditListingFragment", "📡 Sending PATCH request to MotorVehicle API: " + endpoint + " with value: " + newValue);
@@ -184,6 +192,14 @@ public class EditListingFragment extends Fragment {
         }
     }
 
+
+    /**
+     * Sends a PATCH request to update a listing field with a new value,
+     * only if the new value is not empty. Displays a toast and logs failure if the update fails.
+     *
+     * @param endpoint The specific backend endpoint for the listing update (e.g., "updatePrice").
+     * @param newValue The new value to apply to the field.
+     */
 
     private void updateListingField(String endpoint, String newValue) {
         if (!TextUtils.isEmpty(newValue)) {
