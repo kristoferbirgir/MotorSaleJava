@@ -55,6 +55,24 @@
     <string name="veldu_likan">Veldu líkan</string>
     <string name="veldu_lit">Veldu lit</string>
     <string name="veldu_girkassa">Veldu gírkassa</string>
+    <string name="setja_mynd">Setja Mynd</string>
+    <string name="description">Description</string>
+    <string name="brand">Brand</string>
+    <string name="model">Model</string>
+    <string name="color">Color</string>
+    <string name="model_year">Model Year</string>
+    <string name="engine_size">Engine Size</string>
+    <string name="horsepower">Horsepower</string>
+    <string name="mileage">Mileage</string>
+    <string name="fuel_consumption">Fuel Consumption</string>
+    <string name="price">Price</string>
+    <string name="address">Address</string>
+    <string name="postal_code">Postal Code</string>
+    <string name="city">City</string>
+    <string name="transmission_type">Transmission Type</string>
+    <string name="motor_vehicle_type">Motor Vehicle Type</string>
+    <string name="fuel_type">Fuel Type</string>
+    <string name="uppf_ra_mynd">Uppfæra mynd</string>
 
 
 </resources>

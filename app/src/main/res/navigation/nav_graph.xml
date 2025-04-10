@@ -57,7 +57,11 @@
         android:id="@+id/userListingsFragment"
         android:name="is.hbv601g.motorsale.UserListingsFragment"
         android:label="Skráningar mínar"
-        tools:layout="@layout/fragment_user_listings" />
+        tools:layout="@layout/fragment_user_listings">
+    <action
+        android:id="@+id/action_userListingsFragment_to_singleListingFragment"
+        app:destination="@id/singleListingFragment" />
+</fragment>
 
     <fragment
         android:id="@+id/userFragment"
