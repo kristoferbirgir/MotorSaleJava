@@ -1,7 +1,14 @@
 package is.hbv601g.motorsale;
 
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +27,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,11 +154,11 @@ public class EditListingFragment extends Fragment {
      */
     private void updateListing() {
         if (vehicleId == null) {
-            Log.e("EditListingFragment", "❌ Error: Vehicle ID is missing. Cannot update.");
+            Log.e("EditListingFragment", "Error: Vehicle ID is missing. Cannot update.");
             return;
         }
 
-        Log.d("EditListingFragment", "🚀 Updating listing...");
+        Log.d("EditListingFragment", "Updating listing...");
 
         // Debugging: Log vehicleId and listingId
         Log.d("EditListingFragment", "📌 Vehicle ID: " + vehicleId);

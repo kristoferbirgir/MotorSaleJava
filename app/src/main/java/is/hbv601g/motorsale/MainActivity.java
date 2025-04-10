@@ -82,18 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Inflates the options menu and adds items to it.
-     *
-     * @param menu The options menu in which you place your items.
-     *
-     * @return
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
     /**
      * Called when an item in the options menu is selected.

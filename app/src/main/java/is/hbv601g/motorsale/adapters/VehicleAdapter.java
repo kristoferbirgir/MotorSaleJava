@@ -70,7 +70,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
 
         holder.vehicleName.setText(listing.getMotorVehicle().getBrand() + " " + listing.getMotorVehicle().getModel());
         holder.vehicleYear.setText(String.valueOf(listing.getMotorVehicle().getModelYear()));
-        holder.vehiclePrice.setText("Verð: " + listing.getPrice() + " kr.");
+        holder.vehiclePrice.setText("Verð: " + String.format("%.0f", listing.getPrice()) + " kr.");
         holder.vehicleLocation.setText("Staðsetning: " + listing.getCity() + ", " + listing.getPostalCode());
 
         String base64String = listing.getImageBase64();

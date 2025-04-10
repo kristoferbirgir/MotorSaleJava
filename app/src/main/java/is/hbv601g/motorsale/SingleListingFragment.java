@@ -101,7 +101,7 @@ public class SingleListingFragment extends Fragment {
         binding.tvVehicleHorsePower.setText("Hestöfl: " + listing.getMotorVehicle().getHorsePower() + " HP");
         binding.tvVehicleMileage.setText("Akstur: " + listing.getMotorVehicle().getMileage() + " km");
         binding.tvVehicleTransmission.setText("Skipting: " + listing.getMotorVehicle().getTransmissionType());
-        binding.tvVehiclePrice.setText("Verð: " + listing.getPrice() + " kr.");
+        binding.tvVehiclePrice.setText("Verð: " + String.format("%.0f", listing.getPrice())+ " kr.");
         binding.tvVehicleLocation.setText("Staðsetning: " + listing.getCity() + ", " + listing.getPostalCode());
         binding.tvVehicleDescription.setText("Lýsing: " + listing.getDescription());
 

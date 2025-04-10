@@ -42,6 +42,7 @@ public class UserListingsFragment extends Fragment {
 
         userService = new UserService(requireContext());
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.recyclerView.setAdapter(adapter);
         NavController navController = Navigation.findNavController(view);
 
         swipeRefreshLayout = binding.swipeRefreshLayout;
