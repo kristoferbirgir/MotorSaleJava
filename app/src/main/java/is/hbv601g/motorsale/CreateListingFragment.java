@@ -228,7 +228,10 @@ public class CreateListingFragment extends Fragment {
             Toast.makeText(getActivity(), "Please fill all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
-
+        if (encodedImage == null) {
+            Toast.makeText(getActivity(), "Please upload an image before submitting", Toast.LENGTH_SHORT).show();
+            return;
+        }
         int modelYear = Integer.parseInt(modelYearStr);
         int horsePower = Integer.parseInt(horsePowerStr);
         int mileage = Integer.parseInt(mileageStr);
