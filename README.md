@@ -26,4 +26,5 @@ Project in Software Project II course in HÍ, the project will be based on creat
 ### 13th April, 2025 - Final
 - User stories 13–15 have been implemented. During this final push, we focused on polishing all functionalities to ensure a smooth user experience and reliable performance.
 - The project is now stable and ready for presentation.
+- It runs locally and uses the backend from last semester, you just have to build and run the app in AndroidStudio.
 - Product owner: Kristófer Birgir
