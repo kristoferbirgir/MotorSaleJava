@@ -22,3 +22,8 @@ Project in Software Project II course in HÍ, the project will be based on creat
 - After dividing the stories among the development team, the work went rather smoothly with one exception.
 - We encountered some difficulties with implementing the sort and filter functionality, as the backend did not support a single query for multiple filters. We had initially implemented the backend with a separate endpoint for each filter. Because of this, it took us longer than expected to find a way to make it work. If the user selects both sorting and filtering, all the filtering happens in the backend. The lists returned from the backend are then intersected, and the intersection is sorted in the app if the user selects a sorting mechanism.
 - Product owner: Viktor Örlygur Andrason
+
+###
+- User stories 13–15 have been implemented. During this final push, we focused on polishing all functionalities to ensure a smooth user experience and reliable performance.
+- The project is now stable and ready for presentation.
+- Product owner: Kristófer Birgir
